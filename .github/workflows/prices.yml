@@ -1,0 +1,70 @@
+name: fetch-prices
+
+on:
+  schedule:
+    # 台北 15:17 ~ 19:17 每小時一輪（UTC 07:17 ~ 11:17），避開整點以減少被延遲；19:17 是最後一輪
+    - cron: "17 7 * * 1-5"
+    - cron: "17 8 * * 1-5"
+    - cron: "17 9 * * 1-5"
+    - cron: "17 10 * * 1-5"
+    - cron: "17 11 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      final:
+        description: "當作最後一輪（會檢查今天該有資料卻沒有）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-prices
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+
+      - name: Fetch prices
+        run: |
+          if [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] || [ "${{ inputs.final }}" = "true" ]; then
+            python fetch_prices.py --final
+          else
+            python fetch_prices.py
+          fi
+
+      - name: Commit if changed
+        run: |
+          git config user.name "prices-bot"
+          git config user.email "prices-bot@users.noreply.github.com"
+          git add prices.json
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "prices $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git pull --rebase -q || true
+            git push
+          fi
+
+      - name: Notify alert
+        if: always() && hashFiles('alert.txt') != ''
+        run: |
+          MSG=$(python -c "import json;print(json.dumps({'content':open('alert.txt',encoding='utf-8').read()[:1800]}))")
+          curl -sS -H "Content-Type: application/json" -d "$MSG" "$DISCORD_WEBHOOK_URL"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          curl -sS -H "Content-Type: application/json" \
+            -d "{\"content\":\"⚠️ 戰情室價格更新失敗（${{ github.event.schedule || '手動' }}），下一輪會自動重試。紀錄：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            "$DISCORD_WEBHOOK_URL"
