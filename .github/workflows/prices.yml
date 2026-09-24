@@ -8,10 +8,17 @@ on:
     - cron: "17 9 * * 1-5"
     - cron: "17 10 * * 1-5"
     - cron: "17 11 * * 1-5"
+    # 夜盤收盤（清晨 05:00）後只抓期貨：台北週二~週六 05:17、06:17（UTC 前一天 21:17、22:17），06:17 是夜盤最後一輪
+    - cron: "17 21 * * 1-5"
+    - cron: "17 22 * * 1-5"
   workflow_dispatch:
     inputs:
       final:
         description: "當作最後一輪（會檢查今天該有資料卻沒有）"
+        type: boolean
+        default: false
+      night:
+        description: "夜盤模式（只抓期貨，不抓股票）"
         type: boolean
         default: false
 
@@ -36,6 +43,7 @@ jobs:
       - run: pip install requests
 
       - name: Fetch prices
+        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           if [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] || [ "${{ inputs.final }}" = "true" ]; then
             python fetch_prices.py --final
@@ -44,14 +52,27 @@ jobs:
           fi
 
       - name: Fetch dividend notices (failure does not affect prices)
+        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           python fetch_dividends.py || { [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] && echo "⚠️ 除權息預告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
+
+      - name: Fetch futures (TX/TMF + institutional chips; failure does not affect prices)
+        run: |
+          if [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] || [ "${{ inputs.final }}" = "true" ]; then
+            python fetch_futures.py --final || echo "⚠️ 期貨行情/法人籌碼今天抓取失敗（不影響股票收盤價）" >> alert.txt
+          elif [ "${{ github.event.schedule }}" = "17 22 * * 1-5" ]; then
+            python fetch_futures.py --night-final || echo "⚠️ 夜盤收盤後的期貨資料抓取失敗，戰情室期貨區塊會停在上一次" >> alert.txt
+          else
+            python fetch_futures.py || true
+          fi
 
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
           git config user.email "prices-bot@users.noreply.github.com"
+          touch futures.json
           git add prices.json dividends.json
+          [ -s futures.json ] && git add futures.json
           if git diff --cached --quiet; then
             echo "no change"
           else
