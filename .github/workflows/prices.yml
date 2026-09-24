@@ -43,11 +43,15 @@ jobs:
             python fetch_prices.py
           fi
 
+      - name: Fetch dividend notices (failure does not affect prices)
+        run: |
+          python fetch_dividends.py || { [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] && echo "⚠️ 除權息預告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
+
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
           git config user.email "prices-bot@users.noreply.github.com"
-          git add prices.json
+          git add prices.json dividends.json
           if git diff --cached --quiet; then
             echo "no change"
           else
