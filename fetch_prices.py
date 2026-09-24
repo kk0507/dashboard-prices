@@ -1,7 +1,7 @@
 # python fetch_prices.py [--final]
 # 抓全市場收盤價(證交所+櫃買)與大盤，輸出 prices.json（只含公開行情，不含任何持股資訊）。
 # 有問題時寫 alert.txt（workflow 會轉送 Discord）；--final 表示今天最後一輪，會額外檢查「今天該有資料卻沒有」。
-import json, re, sys, datetime as dt
+import csv, io, json, re, sys, datetime as dt
 import requests
 
 H = {"User-Agent": "Mozilla/5.0"}
@@ -9,6 +9,8 @@ TW = dt.timezone(dt.timedelta(hours=8))
 TWSE_ALL = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"
 TPEX_ALL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes"
 FMTQIK = "https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK"
+# 證交所官網（指定日期）比開放資料平台早更新好幾個小時，優先用；開放資料當備援
+TWSE_RWD = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL?response=csv&date={d}"
 FIVE_MIN = "https://www.twse.com.tw/exchangeReport/MI_5MINS_INDEX?response=json&date={d}"
 
 
@@ -22,6 +24,23 @@ def get_json(url, tries=3):
         except Exception as e:  # noqa: BLE001
             err = e
     raise RuntimeError(f"{url} 抓取失敗：{err}")
+
+
+def twse_rwd_rows(day):
+    """官網 CSV：回傳與 openapi 相同欄位名稱的 list；當天沒資料或格式不對回傳 []。"""
+    try:
+        r = requests.get(TWSE_RWD.format(d=day.replace("-", "")), headers=H, timeout=30)
+        text = r.text.lstrip("﻿")
+        if r.status_code != 200 or text.startswith("{") or text.startswith("<"):
+            return []
+        out = []
+        for row in csv.reader(io.StringIO(text)):
+            if len(row) >= 9 and re.fullmatch(r"\d{7}", row[0].strip()):
+                out.append({"Date": row[0].strip(), "Code": row[1].strip(), "Name": row[2].strip(),
+                            "ClosingPrice": row[8].strip(), "Change": row[9].strip() if len(row) > 9 else ""})
+        return out
+    except Exception:  # noqa: BLE001
+        return []
 
 
 def roc(d):
@@ -46,7 +65,10 @@ def main():
     alerts = []
 
     quotes, src = {}, {}
-    rows = get_json(TWSE_ALL)
+    today_str = dt.datetime.now(TW).strftime("%Y-%m-%d")
+    rows = twse_rwd_rows(today_str) if dt.datetime.now(TW).weekday() < 5 else []
+    if len(rows) < 800:
+        rows = get_json(TWSE_ALL)
     for r in rows:
         c = num(r.get("ClosingPrice"))
         if c and STOCK_CODE.match(r["Code"].strip()):
@@ -72,6 +94,17 @@ def main():
     if not rec:
         raise RuntimeError("大盤資料為空")
     d, close, chg = rec[-1]
+    if d < today_str and dt.datetime.now(TW).weekday() < 5:
+        # FMTQIK 還沒更新今天時，用今天 5 秒指數的最後一筆當收盤（13:30 那筆＝收盤指數）
+        try:
+            j0 = get_json(FIVE_MIN.format(d=today_str.replace("-", "")))
+            d0 = j0.get("data") or []
+            if j0.get("stat") == "OK" and d0 and d0[-1][0][:5] >= "13:30":
+                c0 = float(str(d0[-1][1]).replace(",", ""))
+                rec.append((today_str, c0, round(c0 - close, 2)))
+                d, close, chg = rec[-1]
+        except Exception:  # noqa: BLE001
+            pass
     taiex = {"date": d, "close": close, "change": chg,
              "changePct": round(chg / (close - chg) * 100, 2),
              "recent": [[x[0][5:], x[1]] for x in rec[-15:]], "intraday": []}
@@ -108,7 +141,7 @@ def main():
         sign = "+" if taiex["change"] >= 0 else ""
         with open("notify.txt", "w", encoding="utf-8") as f:
             f.write(f"✅ {new_done} 收盤價已備妥（大盤 {taiex['close']:,.2f}，{sign}{taiex['change']:,.2f} / {sign}{taiex['changePct']}%）。"
-                    f"戰情室會在下一輪雲端排程（16:45／17:45／19:45／隔天07:45）寫入。")
+                    f"戰情室會在下一輪雲端排程寫入（平日 16:45／17:45／19:45，隔天 07:45 兜底）。")
 
     with open("prices.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
@@ -124,7 +157,7 @@ def main():
         if is_trading_day:
             late = [k for k, v in (("證交所", src["twse"]["date"]), ("櫃買", src["tpex"]["date"]), ("大盤", d)) if v != today]
             if late:
-                alerts.append(f"🔴 今天（{today}）是交易日，但三輪都沒抓到最新收盤價：{'、'.join(late)}。請手動跑 /refresh")
+                alerts.append(f"🔴 今天（{today}）是交易日，但各輪都沒抓到最新收盤價：{'、'.join(late)}。請手動跑 /refresh")
     if alerts:
         with open("alert.txt", "w", encoding="utf-8") as f:
             f.write("\n".join(alerts))
