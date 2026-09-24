@@ -1,7 +1,7 @@
 # python fetch_prices.py [--final]
 # 抓全市場收盤價(證交所+櫃買)與大盤，輸出 prices.json（只含公開行情，不含任何持股資訊）。
 # 有問題時寫 alert.txt（workflow 會轉送 Discord）；--final 表示今天最後一輪，會額外檢查「今天該有資料卻沒有」。
-import csv, io, json, re, sys, datetime as dt
+import csv, io, json, re, sys, time, datetime as dt
 import requests
 
 H = {"User-Agent": "Mozilla/5.0"}
@@ -14,9 +14,11 @@ TWSE_RWD = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL?response=c
 FIVE_MIN = "https://www.twse.com.tw/exchangeReport/MI_5MINS_INDEX?response=json&date={d}"
 
 
-def get_json(url, tries=3):
+def get_json(url, tries=5):
     err = None
-    for _ in range(tries):
+    for i in range(tries):
+        if i:
+            time.sleep(4 * i)  # 對方伺服器偶爾中斷連線，隔幾秒再試
         try:
             r = requests.get(url, headers=H, timeout=30)
             r.raise_for_status()
