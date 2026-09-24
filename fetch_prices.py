@@ -89,6 +89,27 @@ def main():
 
     now = dt.datetime.now(TW)
     out = {"generatedAt": now.isoformat(timespec="seconds"), "sources": src, "taiex": taiex, "quotes": quotes}
+
+    # 三個來源日期到齊＝當天資料完整；同一天只通知一次（跟上一版 prices.json 比較）
+    def complete_date(o):
+        try:
+            a, b, c = o["sources"]["twse"]["date"], o["sources"]["tpex"]["date"], o["taiex"]["date"]
+            return a if a == b == c else None
+        except (KeyError, TypeError):
+            return None
+
+    try:
+        with open("prices.json", encoding="utf-8") as f:
+            old_done = complete_date(json.load(f))
+    except (OSError, ValueError):
+        old_done = None
+    new_done = complete_date(out)
+    if new_done and new_done != old_done:
+        sign = "+" if taiex["change"] >= 0 else ""
+        with open("notify.txt", "w", encoding="utf-8") as f:
+            f.write(f"✅ {new_done} 收盤價已備妥（大盤 {taiex['close']:,.2f}，{sign}{taiex['change']:,.2f} / {sign}{taiex['changePct']}%）。"
+                    f"戰情室會在下一輪雲端排程（16:45／17:45／19:45／隔天07:45）寫入。")
+
     with open("prices.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"OK twse={src['twse']} tpex={src['tpex']} taiex={d} {close}")
