@@ -78,12 +78,16 @@ jobs:
             true
           fi
 
+      - name: Fetch official announcements (failure does not affect prices)
+        run: |
+          python fetch_announcements.py || { [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && echo "⚠️ 官方公告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
+
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
           git config user.email "prices-bot@users.noreply.github.com"
           touch futures.json
-          git add prices.json dividends.json signals.json data/
+          git add prices.json dividends.json signals.json announcements.json data/
           [ -s futures.json ] && git add futures.json
           if git diff --cached --quiet; then
             echo "no change"
