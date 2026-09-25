@@ -8,6 +8,8 @@ on:
     - cron: "17 9 * * 1-5"
     - cron: "17 10 * * 1-5"
     - cron: "17 11 * * 1-5"
+    # 台北 21:47（UTC 13:47）：融資融券與櫃買籌碼比較晚公布，這一輪補齊並檢查資料完整度
+    - cron: "47 13 * * 1-5"
     # 夜盤收盤（清晨 05:00）後只抓期貨：台北週二~週六 05:17、06:17（UTC 前一天 21:17、22:17），06:17 是夜盤最後一輪
     - cron: "17 21 * * 1-5"
     - cron: "17 22 * * 1-5"
@@ -66,12 +68,22 @@ jobs:
             python fetch_futures.py || true
           fi
 
+      - name: Update market data store and signals (failure does not affect prices)
+        run: |
+          FINALRUN=0; [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && FINALRUN=1
+          if python update_store.py && python build_signals.py; then
+            if [ "$FINALRUN" = "1" ] && [ -f store_warn.txt ]; then { echo "⚠️ 籌碼資料不完整（不影響收盤價）："; cat store_warn.txt; } >> alert.txt; fi
+          else
+            [ "$FINALRUN" = "1" ] && echo "⚠️ 籌碼資料工廠今天更新失敗（不影響收盤價）" >> alert.txt
+            true
+          fi
+
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
           git config user.email "prices-bot@users.noreply.github.com"
           touch futures.json
-          git add prices.json dividends.json
+          git add prices.json dividends.json signals.json data/
           [ -s futures.json ] && git add futures.json
           if git diff --cached --quiet; then
             echo "no change"
