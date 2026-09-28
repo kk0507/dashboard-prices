@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-29T05:27:39+08:00",
+ "generatedAt": "2026-09-29T06:28:11+08:00",
  "usSession": "2026-09-28",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-09-28",
-   "time": "2026-09-29T04:59+08:00",
-   "price": 7746.25,
+   "time": "2026-09-29T06:18+08:00",
+   "price": 7751.75,
    "prev": 7803.75,
-   "change": -57.5,
-   "changePct": -0.74,
+   "change": -52.0,
+   "changePct": -0.67,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-09-28",
-   "time": "2026-09-29T04:59+08:00",
-   "price": 30556.75,
+   "time": "2026-09-29T06:18+08:00",
+   "price": 30607.75,
    "prev": 30889.25,
-   "change": -332.5,
-   "changePct": -1.08,
+   "change": -281.5,
+   "changePct": -0.91,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-09-28",
-   "time": "2026-09-29T04:59+08:00",
-   "price": 93.29,
+   "time": "2026-09-29T06:18+08:00",
+   "price": 93.24,
    "prev": 92.41,
-   "change": 0.88,
-   "changePct": 0.95,
+   "change": 0.83,
+   "changePct": 0.9,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-09-28",
-   "time": "2026-09-29T04:58+08:00",
-   "price": 98.56,
+   "time": "2026-09-29T06:17+08:00",
+   "price": 98.64,
    "prev": 97.44,
-   "change": 1.12,
-   "changePct": 1.15,
+   "change": 1.2,
+   "changePct": 1.23,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,8 +146,8 @@
    "prev": 450.61,
    "change": 2.27,
    "changePct": 0.5,
-   "twdRate": 31.778,
-   "twdEquiv": 2878.3,
+   "twdRate": 31.781,
+   "twdEquiv": 2878.6,
    "twClose": 2475.0,
    "twDate": "2026-09-24",
    "premiumPct": 16.3
@@ -157,7 +157,7 @@
    "sym": "TWNV26",
    "name": "富台期",
    "date": "2026-09-29",
-   "time": "2026-09-29T05:15+08:00",
+   "time": "2026-09-29T05:20+08:00",
    "price": 4284.5,
    "prev": 4268.25,
    "change": 16.25,
