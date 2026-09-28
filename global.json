@@ -1,70 +1,70 @@
 {
- "generatedAt": "2026-09-28T17:17:36+08:00",
- "usSession": "2026-09-25",
+ "generatedAt": "2026-09-29T05:27:39+08:00",
+ "usSession": "2026-09-28",
  "items": [
   {
    "group": "us",
    "sym": "^SOX",
    "name": "費城半導體",
-   "date": "2026-09-25",
-   "time": "2026-09-26T05:15+08:00",
-   "price": 12668.929,
-   "prev": 12492.54,
-   "change": 176.389,
-   "changePct": 1.41
+   "date": "2026-09-28",
+   "time": "2026-09-29T05:15+08:00",
+   "price": 12465.241,
+   "prev": 12668.9297,
+   "change": -203.6887,
+   "changePct": -1.61
   },
   {
    "group": "us",
    "sym": "^IXIC",
    "name": "那斯達克",
-   "date": "2026-09-25",
-   "time": "2026-09-26T05:15+08:00",
-   "price": 27068.717,
-   "prev": 26939.3691,
-   "change": 129.3479,
-   "changePct": 0.48
+   "date": "2026-09-28",
+   "time": "2026-09-29T05:15+08:00",
+   "price": 26820.38,
+   "prev": 27068.7207,
+   "change": -248.3407,
+   "changePct": -0.92
   },
   {
    "group": "us",
    "sym": "^GSPC",
    "name": "標普500",
-   "date": "2026-09-25",
-   "time": "2026-09-26T04:39+08:00",
-   "price": 7743.41,
-   "prev": 7704.1299,
-   "change": 39.2801,
-   "changePct": 0.51
+   "date": "2026-09-28",
+   "time": "2026-09-29T04:36+08:00",
+   "price": 7683.69,
+   "prev": 7743.4102,
+   "change": -59.7202,
+   "changePct": -0.77
   },
   {
    "group": "us",
    "sym": "^DJI",
    "name": "道瓊",
-   "date": "2026-09-25",
-   "time": "2026-09-26T05:05+08:00",
-   "price": 51828.62,
-   "prev": 51349.9805,
-   "change": 478.6395,
-   "changePct": 0.93
+   "date": "2026-09-28",
+   "time": "2026-09-29T04:36+08:00",
+   "price": 51481.51,
+   "prev": 51828.6211,
+   "change": -347.1111,
+   "changePct": -0.67
   },
   {
    "group": "rates",
    "sym": "^TNX",
    "name": "美債10年",
-   "date": "2026-09-25",
-   "time": "2026-09-26T02:59+08:00",
-   "price": 5.184,
-   "prev": 5.162,
-   "changeBp": 2.2
+   "date": "2026-09-28",
+   "time": "2026-09-29T02:59+08:00",
+   "price": 5.24,
+   "prev": 5.184,
+   "changeBp": 5.6
   },
   {
    "group": "rates",
    "sym": "^TYX",
    "name": "美債30年",
-   "date": "2026-09-25",
-   "time": "2026-09-26T02:59+08:00",
-   "price": 5.504,
-   "prev": 5.461,
-   "changeBp": 4.3
+   "date": "2026-09-28",
+   "time": "2026-09-29T02:59+08:00",
+   "price": 5.561,
+   "prev": 5.504,
+   "changeBp": 5.7
   },
   {
    "group": "asia",
@@ -82,7 +82,7 @@
    "sym": "^KS11",
    "name": "韓國KOSPI",
    "date": "2026-09-28",
-   "time": "2026-09-28T14:32+08:00",
+   "time": "2026-09-28T19:05+08:00",
    "price": 6889.74,
    "prev": 7080.9199,
    "change": -191.1799,
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-09-28",
-   "time": "2026-09-28T17:07+08:00",
-   "price": 7765.25,
+   "time": "2026-09-29T04:59+08:00",
+   "price": 7746.25,
    "prev": 7803.75,
-   "change": -38.5,
-   "changePct": -0.49,
+   "change": -57.5,
+   "changePct": -0.74,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-09-28",
-   "time": "2026-09-28T17:07+08:00",
-   "price": 30567.25,
+   "time": "2026-09-29T04:59+08:00",
+   "price": 30556.75,
    "prev": 30889.25,
-   "change": -322.0,
-   "changePct": -1.04,
+   "change": -332.5,
+   "changePct": -1.08,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-09-28",
-   "time": "2026-09-28T17:07+08:00",
-   "price": 95.54,
+   "time": "2026-09-29T04:59+08:00",
+   "price": 93.29,
    "prev": 92.41,
-   "change": 3.13,
-   "changePct": 3.39,
+   "change": 0.88,
+   "changePct": 0.95,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,28 +129,44 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-09-28",
-   "time": "2026-09-28T17:07+08:00",
-   "price": 100.7,
+   "time": "2026-09-29T04:58+08:00",
+   "price": 98.56,
    "prev": 97.44,
-   "change": 3.26,
-   "changePct": 3.35,
+   "change": 1.12,
+   "changePct": 1.15,
    "contract": "BZZ26.NYM"
   },
   {
    "group": "adr",
    "sym": "TSM",
    "name": "台積電ADR",
-   "date": "2026-09-25",
-   "time": "2026-09-26T04:00+08:00",
-   "price": 450.61,
-   "prev": 451.15,
-   "change": -0.54,
-   "changePct": -0.12,
-   "twdRate": 31.801,
-   "twdEquiv": 2866.0,
+   "date": "2026-09-28",
+   "time": "2026-09-29T04:00+08:00",
+   "price": 452.88,
+   "prev": 450.61,
+   "change": 2.27,
+   "changePct": 0.5,
+   "twdRate": 31.778,
+   "twdEquiv": 2878.3,
    "twClose": 2475.0,
    "twDate": "2026-09-24",
-   "premiumPct": 15.8
+   "premiumPct": 16.3
+  },
+  {
+   "group": "twFut",
+   "sym": "TWNV26",
+   "name": "富台期",
+   "date": "2026-09-29",
+   "time": "2026-09-29T05:15+08:00",
+   "price": 4284.5,
+   "prev": 4268.25,
+   "change": 16.25,
+   "changePct": 0.38,
+   "contract": "TWNV26.SGX",
+   "session": "夜間盤",
+   "baseDate": "2026-09-24",
+   "tmfBase": 48130.0,
+   "tmfEquiv": 48313
   }
  ],
  "estimate": {
@@ -158,22 +174,23 @@
   "baseSession": "夜盤",
   "baseTime": "2026-09-25T05:00+08:00",
   "usDays": [
-   "2026-09-25"
+   "2026-09-25",
+   "2026-09-28"
   ],
   "parts": [
    {
     "name": "費半",
-    "cumPct": 1.41
+    "cumPct": -0.22
    },
    {
     "name": "那指",
-    "cumPct": 0.48
+    "cumPct": -0.44
    }
   ],
-  "lowPts": 154,
-  "highPts": 244,
-  "low": 48114,
-  "high": 48204,
+  "lowPts": -142,
+  "highPts": -38,
+  "low": 47818,
+  "high": 47922,
   "note": "粗估：微台大約是費半漲跌的0.36倍、那指的0.67倍，約四成的波動解釋不到"
  },
  "errors": []
