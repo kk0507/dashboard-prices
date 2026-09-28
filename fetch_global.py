@@ -1,6 +1,6 @@
 # python fetch_global.py
 # 盤前全球快照：美股收盤、美股期貨、原油、美債殖利率、台積電 ADR、前一日亞股 → global.json。
-# 只含公開行情，不含任何個人部位。資料來源 Yahoo Finance（跟 TMF-night-report 的美股收盤通知同一個來源）。
+# 只含公開行情，不含任何個人部位。資料來源 Yahoo Finance（跟 TMF-night-report 的美股收盤通知同一個來源）；富台期來自新加坡交易所 API。
 # 期貨（原油、美股期貨）不用 Yahoo 的連續月報價算漲跌：連續月換約時歷史還是舊合約，漲跌會失真
 # （2026-09-28 布蘭特連續月已換成 12 月約，算出 −3.8%，實際 +2.9%）。改找「目前報價對應的那一個合約」，用它自己的前一日收盤算。
 # 微台粗估：只有在「微台上次收盤之後還有美股交易日」時才算（台股休市、美股照開）；平常夜盤收盤已經反映美股，不估。
@@ -122,6 +122,45 @@ def estimate(charts):
             "note": "粗估：微台大約是費半漲跌的0.36倍、那指的0.67倍，約四成的波動解釋不到"}
 
 
+SGX = "https://api.sgx.com/derivatives/v1.0"
+
+
+def sgx_twn():
+    """富台期（新加坡 FTSE Taiwan 期貨）：台股休市時照常交易，是台股最直接的參考。
+    取成交量最大的合約（避開換月時連續月新舊合約混算），漲跌對「微台最後一次日盤收盤那天」的富台結算價
+    （富台結算在台股日盤收盤時定），並換算成微台點數。拿不到就丟例外，由 main 記進 errors。"""
+    try:
+        f = json.load(open("futures.json", encoding="utf-8"))
+        tmf_date, tmf_close = f["date"], f["tmf"]["close"]
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        raise ValueError(f"futures.json 沒有微台日盤收盤：{e}")
+    rows = requests.get(f"{SGX}/contract-code/TWN", params={
+        "order": "asc", "orderby": "delivery-month", "category": "futures",
+        "t": int(dt.datetime.now().timestamp() * 1000)}, headers=H, timeout=20).json()["data"]
+    rows = [r for r in rows if not r["symbol"].endswith("_TAIC")]
+    vol = {}
+    for r in rows:
+        vol[r["symbol"]] = vol.get(r["symbol"], 0) + (r.get("total-volume") or 0)
+    sym = max(vol, key=vol.get)
+    mine = {r["current-trading-session"]: r for r in rows if r["symbol"] == sym}
+    night, day = mine.get("1", {}), mine.get("0", {})
+    live = night if night.get("last-traded-price-abs") else day
+    price = live.get("last-traded-price-abs") or day.get("daily-settlement-price-abs")
+    hist = requests.get(f"{SGX}/history/symbol/{sym}", params={"days": "1m", "category": "futures"},
+                        headers=H, timeout=20).json()["data"]
+    settle = {h["base-date"]: h["daily-settlement-price-abs"] for h in hist if h.get("daily-settlement-price-abs")}
+    if day.get("daily-settlement-price-abs"):
+        settle[day["base-date"]] = day["daily-settlement-price-abs"]
+    base = settle.get(tmf_date.replace("-", ""))
+    if not price or not base:
+        raise ValueError(f"富台期 {sym} 缺價格或 {tmf_date} 結算價")
+    t = dt.datetime.strptime(live["last-update-time"][:19], "%Y-%m-%d %H:%M:%S").replace(tzinfo=TW)
+    x = item("twFut", sym, "富台期", t.date(), price, base, t)
+    x.update({"contract": f"{sym}.SGX", "session": "夜間盤" if live is night else "日間盤",
+              "baseDate": tmf_date, "tmfBase": tmf_close, "tmfEquiv": round(tmf_close * price / base)})
+    return x
+
+
 def main():
     now = dt.datetime.now(TW)
     items, errors, charts = [], [], {}
@@ -157,6 +196,11 @@ def main():
         items.append(x)
     except Exception as e:  # noqa: BLE001
         errors.append(f"台積電ADR：{e}")
+
+    try:
+        items.append(sgx_twn())
+    except Exception as e:  # noqa: BLE001
+        errors.append(f"富台期：{e}")
 
     us = [x for x in items if x["group"] == "us"]
     if len(us) < 2:
