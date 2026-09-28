@@ -10,7 +10,7 @@ on:
     - cron: "17 11 * * 1-5"
     # 台北 21:47（UTC 13:47）：融資融券與櫃買籌碼比較晚公布，這一輪補齊並檢查資料完整度
     - cron: "47 13 * * 1-5"
-    # 夜盤收盤（清晨 05:00）後只抓期貨：台北週二~週六 05:17、06:17（UTC 前一天 21:17、22:17），06:17 是夜盤最後一輪
+    # 夜盤收盤（清晨 05:00）後只抓期貨＋盤前全球快照（fetch_global.py）：台北週二~週六 05:17、06:17（UTC 前一天 21:17、22:17），06:17 是夜盤最後一輪
     - cron: "17 21 * * 1-5"
     - cron: "17 22 * * 1-5"
   workflow_dispatch:
@@ -68,6 +68,15 @@ jobs:
             python fetch_futures.py || true
           fi
 
+      - name: Fetch global pre-market snapshot (night runs only; failure does not affect prices)
+        if: github.event.schedule == '17 21 * * 1-5' || github.event.schedule == '17 22 * * 1-5' || inputs.night == true
+        run: |
+          if [ "${{ github.event.schedule }}" = "17 22 * * 1-5" ]; then
+            python fetch_global.py || echo "⚠️ 盤前全球快照抓取失敗（Yahoo），戰情室期貨分頁的全球快照會停在上一次" >> alert.txt
+          else
+            python fetch_global.py || true
+          fi
+
       - name: Update market data store and signals (failure does not affect prices)
         run: |
           FINALRUN=0; [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && FINALRUN=1
@@ -89,6 +98,7 @@ jobs:
           touch futures.json
           git add prices.json dividends.json signals.json announcements.json data/
           [ -s futures.json ] && git add futures.json
+          [ -s global.json ] && git add global.json
           if git diff --cached --quiet; then
             echo "no change"
           else
