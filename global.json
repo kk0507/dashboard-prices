@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-30T05:29:06+08:00",
+ "generatedAt": "2026-09-30T06:29:19+08:00",
  "usSession": "2026-09-29",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-09-29",
-   "time": "2026-09-30T04:59+08:00",
-   "price": 7738.25,
+   "time": "2026-09-30T06:19+08:00",
+   "price": 7746.5,
    "prev": 7746.75,
-   "change": -8.5,
-   "changePct": -0.11,
+   "change": -0.25,
+   "changePct": -0.0,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-09-29",
-   "time": "2026-09-30T04:59+08:00",
-   "price": 30652.75,
+   "time": "2026-09-30T06:19+08:00",
+   "price": 30696.5,
    "prev": 30566.25,
-   "change": 86.5,
-   "changePct": 0.28,
+   "change": 130.25,
+   "changePct": 0.43,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-09-29",
-   "time": "2026-09-30T04:59+08:00",
-   "price": 88.94,
+   "time": "2026-09-30T06:19+08:00",
+   "price": 88.72,
    "prev": 92.6,
-   "change": -3.66,
-   "changePct": -3.95,
+   "change": -3.88,
+   "changePct": -4.19,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-09-29",
-   "time": "2026-09-30T04:59+08:00",
-   "price": 95.67,
+   "time": "2026-09-30T06:19+08:00",
+   "price": 95.49,
    "prev": 97.83,
-   "change": -2.16,
-   "changePct": -2.21,
+   "change": -2.34,
+   "changePct": -2.39,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,18 +146,18 @@
    "prev": 452.88,
    "change": 4.06,
    "changePct": 0.9,
-   "twdRate": 31.856,
-   "twdEquiv": 2911.3,
+   "twdRate": 31.863,
+   "twdEquiv": 2911.9,
    "twClose": 2475.0,
    "twDate": "2026-09-29",
-   "premiumPct": 17.6
+   "premiumPct": 17.7
   },
   {
    "group": "twFut",
    "sym": "TWNV26",
    "name": "富台期",
    "date": "2026-09-30",
-   "time": "2026-09-30T05:12+08:00",
+   "time": "2026-09-30T05:20+08:00",
    "price": 4286.75,
    "prev": 4212.5,
    "change": 74.25,
