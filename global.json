@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-01T05:29:58+08:00",
+ "generatedAt": "2026-10-01T06:30:32+08:00",
  "usSession": "2026-09-30",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-09-30",
-   "time": "2026-10-01T05:00+08:00",
-   "price": 7721.5,
+   "time": "2026-10-01T06:20+08:00",
+   "price": 7730.0,
    "prev": 7732.0,
-   "change": -10.5,
-   "changePct": -0.14,
+   "change": -2.0,
+   "changePct": -0.03,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-09-30",
-   "time": "2026-10-01T04:59+08:00",
-   "price": 30725.75,
+   "time": "2026-10-01T06:20+08:00",
+   "price": 30745.75,
    "prev": 30613.25,
-   "change": 112.5,
-   "changePct": 0.37,
+   "change": 132.5,
+   "changePct": 0.43,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-09-30",
-   "time": "2026-10-01T04:59+08:00",
-   "price": 90.34,
+   "time": "2026-10-01T06:20+08:00",
+   "price": 90.18,
    "prev": 89.38,
-   "change": 0.96,
-   "changePct": 1.07,
+   "change": 0.8,
+   "changePct": 0.9,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-09-30",
-   "time": "2026-10-01T04:59+08:00",
-   "price": 97.92,
+   "time": "2026-10-01T06:16+08:00",
+   "price": 97.74,
    "prev": 96.16,
-   "change": 1.76,
-   "changePct": 1.83,
+   "change": 1.58,
+   "changePct": 1.64,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,8 +146,8 @@
    "prev": 456.94,
    "change": -0.75,
    "changePct": -0.16,
-   "twdRate": 31.872,
-   "twdEquiv": 2907.9,
+   "twdRate": 31.875,
+   "twdEquiv": 2908.2,
    "twClose": 2480.0,
    "twDate": "2026-09-30",
    "premiumPct": 17.3
@@ -157,7 +157,7 @@
    "sym": "TWNV26",
    "name": "富台期",
    "date": "2026-10-01",
-   "time": "2026-10-01T05:14+08:00",
+   "time": "2026-10-01T05:20+08:00",
    "price": 4252.25,
    "prev": 4258.0,
    "change": -5.75,
