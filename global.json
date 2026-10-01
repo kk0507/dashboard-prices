@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-02T05:29:24+08:00",
+ "generatedAt": "2026-10-02T06:28:20+08:00",
  "usSession": "2026-10-01",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-01",
-   "time": "2026-10-02T04:59+08:00",
-   "price": 7725.0,
+   "time": "2026-10-02T06:18+08:00",
+   "price": 7726.0,
    "prev": 7715.5,
-   "change": 9.5,
-   "changePct": 0.12,
+   "change": 10.5,
+   "changePct": 0.14,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-01",
-   "time": "2026-10-02T04:59+08:00",
-   "price": 30771.25,
+   "time": "2026-10-02T06:18+08:00",
+   "price": 30788.0,
    "prev": 30698.75,
-   "change": 72.5,
-   "changePct": 0.24,
+   "change": 89.25,
+   "changePct": 0.29,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-10-01",
-   "time": "2026-10-02T04:59+08:00",
-   "price": 92.91,
+   "time": "2026-10-02T06:18+08:00",
+   "price": 93.19,
    "prev": 90.42,
-   "change": 2.49,
-   "changePct": 2.75,
+   "change": 2.77,
+   "changePct": 3.06,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-10-01",
-   "time": "2026-10-02T04:59+08:00",
-   "price": 102.21,
+   "time": "2026-10-02T06:15+08:00",
+   "price": 102.68,
    "prev": 98.03,
-   "change": 4.18,
-   "changePct": 4.26,
+   "change": 4.65,
+   "changePct": 4.74,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,8 +146,8 @@
    "prev": 456.19,
    "change": 3.01,
    "changePct": 0.66,
-   "twdRate": 31.888,
-   "twdEquiv": 2928.6,
+   "twdRate": 31.889,
+   "twdEquiv": 2928.7,
    "twClose": 2510.0,
    "twDate": "2026-10-01",
    "premiumPct": 16.7
@@ -157,7 +157,7 @@
    "sym": "TWNV26",
    "name": "富台期",
    "date": "2026-10-02",
-   "time": "2026-10-02T05:15+08:00",
+   "time": "2026-10-02T05:20+08:00",
    "price": 4269.75,
    "prev": 4288.0,
    "change": -18.25,
