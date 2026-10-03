@@ -23,6 +23,10 @@ on:
         description: "夜盤模式（只抓期貨，不抓股票）"
         type: boolean
         default: false
+      screen:
+        description: "產生選股名單（當作每週那一次）"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -91,12 +95,19 @@ jobs:
         run: |
           python fetch_announcements.py || { [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && echo "⚠️ 官方公告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
 
+      - name: Build stock screen (21:47 run only, weekly P/E history on Fridays; failure does not affect prices)
+        if: github.event.schedule == '47 13 * * 1-5' || inputs.screen == true
+        run: |
+          W=""; { [ "$(date -u +%u)" = "5" ] || [ "${{ inputs.screen }}" = "true" ]; } && W="--weekly"
+          python build_screen.py $W || echo "⚠️ 選股名單今天更新失敗（不影響收盤價）" >> alert.txt
+
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
           git config user.email "prices-bot@users.noreply.github.com"
           touch futures.json
           git add prices.json dividends.json signals.json announcements.json data/
+          [ -s screen.json ] && git add screen.json
           [ -s futures.json ] && git add futures.json
           [ -s global.json ] && git add global.json
           if git diff --cached --quiet; then

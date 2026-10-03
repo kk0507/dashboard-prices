@@ -151,11 +151,42 @@ def tpex_margin_latest():
     return day, out
 
 
+# ---------- 月營收（千元）----------
+def _revenue(url):
+    """官方開放資料只給「最新一個月」，每天抓、累積成歷史。date 欄放營收月份（YYYY-MM）；附去年同月營收，算年增不必等滿 12 個月。"""
+    out = []
+    for r in http(url):
+        code, ym, rev = (r.get("公司代號") or "").strip(), str(r.get("資料年月") or "").strip(), n(r.get("營業收入-當月營收"))
+        if is_stock(code) and len(ym) >= 4 and rev > 0:
+            out.append({"date": f"{int(ym[:-2]) + 1911:04d}-{ym[-2:]}", "code": code, "revenue": rev,
+                        "prev_year": n(r.get("營業收入-去年當月營收")), "industry": (r.get("產業別") or "").strip()})
+    return out
+
+
+def twse_revenue_latest():
+    return _revenue("https://openapi.twse.com.tw/v1/opendata/t187ap05_L")
+
+
+def tpex_revenue_latest():
+    return _revenue("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O")
+
+
+# ---------- 本益比（最新一天）----------
+def twse_per_latest():
+    return {r["Code"].strip(): n(r.get("PEratio")) for r in http("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL")}
+
+
+def tpex_per_latest():
+    return {r["SecuritiesCompanyCode"].strip(): n(r.get("PriceEarningRatio"))
+            for r in http("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_peratio_analysis")}
+
+
 # ---------- CSV ----------
 COLS = {
     "prices": ["date", "code", "open", "high", "low", "close", "volume", "value"],
     "inst": ["date", "code", "foreign", "trust", "dealer"],
     "margin": ["date", "code", "margin_bal", "short_bal"],
+    "revenue": ["date", "code", "revenue", "prev_year"],
 }
 
 
