@@ -12,6 +12,8 @@ FMTQIK = "https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK"
 # 證交所官網（指定日期）比開放資料平台早更新好幾個小時，優先用；開放資料當備援
 TWSE_RWD = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL?response=csv&date={d}"
 FIVE_MIN = "https://www.twse.com.tw/exchangeReport/MI_5MINS_INDEX?response=json&date={d}"
+# 櫃買官網（指定日期）：檔案比開放資料小、更新也早；開放資料那支 4.7 MB，收盤後常傳到一半斷線，當備援
+TPEX_SITE = "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?date={d}&id=&response=json"
 
 
 def get_json(url, tries=5):
@@ -45,6 +47,35 @@ def twse_rwd_rows(day):
         return []
 
 
+def tpex_site_rows(day):
+    """櫃買官網：回傳與 openapi 相同欄位名稱的 list；當天沒資料或格式不對回傳 []。"""
+    for i in range(3):
+        if i:
+            time.sleep(4 * i)
+        try:
+            r = requests.get(TPEX_SITE.format(d=day.replace("-", "/")), headers=H, timeout=30)
+            j = r.json()
+            if r.status_code != 200 or j.get("stat") != "ok" or j.get("date") != day.replace("-", ""):
+                return []
+            t = j["tables"][0]
+            if t["fields"][:4] != ["代號", "名稱", "收盤", "漲跌"]:
+                return []
+            rocd = f"{int(day[:4]) - 1911}{day[5:7]}{day[8:10]}"
+            return [{"Date": rocd, "SecuritiesCompanyCode": x[0].strip(), "CompanyName": x[1].strip(),
+                     "Close": x[2].strip(), "Change": x[3].strip()} for x in t["data"]]
+        except Exception:  # noqa: BLE001
+            continue
+    return []
+
+
+def load_old():
+    try:
+        with open("prices.json", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
 def roc(d):
     d = str(d).strip()
     return f"{int(d[:-4]) + 1911:04d}-{d[-4:-2]}-{d[-2:]}"
@@ -66,35 +97,72 @@ def main():
     final = "--final" in sys.argv
     alerts = []
 
-    quotes, src = {}, {}
+    src = {}
+    old = load_old()
+    failed = []  # 這一輪抓不到的來源：沿用上一版該來源的資料，其餘照寫，不讓整輪失敗
+    weekday = dt.datetime.now(TW).weekday() < 5
     today_str = dt.datetime.now(TW).strftime("%Y-%m-%d")
-    rows = twse_rwd_rows(today_str) if dt.datetime.now(TW).weekday() < 5 else []
-    if len(rows) < 800:
-        rows = get_json(TWSE_ALL)
-    for r in rows:
-        c = num(r.get("ClosingPrice"))
-        if c and STOCK_CODE.match(r["Code"].strip()):
-            chg = num_signed(r.get("Change"))
-            quotes[r["Code"].strip()] = {"c": c, "d": roc(r["Date"]), "chg": chg, "n": r.get("Name", "").strip()}
-    src["twse"] = {"date": roc(rows[0]["Date"]) if rows else None, "count": len(quotes)}
-    n0 = len(quotes)
 
-    rows = get_json(TPEX_ALL)
-    for r in rows:
-        c = num(r.get("Close"))
-        if c and STOCK_CODE.match(r["SecuritiesCompanyCode"].strip()):
-            quotes[r["SecuritiesCompanyCode"].strip()] = {
-                "c": c, "d": roc(r["Date"]), "chg": num_signed(r.get("Change")), "n": r.get("CompanyName", "").strip()}
-    src["tpex"] = {"date": roc(rows[0]["Date"]) if rows else None, "count": len(quotes) - n0}
+    def twse_quotes():
+        rows = twse_rwd_rows(today_str) if weekday else []
+        if len(rows) < 800:
+            rows = get_json(TWSE_ALL)
+        q = {}
+        for r in rows:
+            c = num(r.get("ClosingPrice"))
+            if c and STOCK_CODE.match(r["Code"].strip()):
+                q[r["Code"].strip()] = {"c": c, "d": roc(r["Date"]), "chg": num_signed(r.get("Change")), "n": r.get("Name", "").strip()}
+        # 資料量太少代表來源壞了，寧可當作沒抓到也不要寫進去
+        if len(q) < 800:
+            raise RuntimeError(f"證交所資料量異常：{len(q)}")
+        return q, {"date": roc(rows[0]["Date"]), "count": len(q)}
 
-    # 資料量太少代表來源壞了，寧可失敗也不要寫進去
-    if src["twse"]["count"] < 800 or src["tpex"]["count"] < 400:
-        raise RuntimeError(f"資料量異常：{src}")
+    def tpex_quotes():
+        rows = tpex_site_rows(today_str) if weekday else []
+        if len(rows) < 400:
+            rows = get_json(TPEX_ALL)
+        q = {}
+        for r in rows:
+            c = num(r.get("Close"))
+            if c and STOCK_CODE.match(r["SecuritiesCompanyCode"].strip()):
+                q[r["SecuritiesCompanyCode"].strip()] = {
+                    "c": c, "d": roc(r["Date"]), "chg": num_signed(r.get("Change")), "n": r.get("CompanyName", "").strip()}
+        if len(q) < 400:
+            raise RuntimeError(f"櫃買資料量異常：{len(q)}")
+        return q, {"date": roc(rows[0]["Date"]), "count": len(q)}
 
-    fm = get_json(FMTQIK)
-    rec = [(roc(x["Date"]), float(str(x["TAIEX"]).replace(",", "")), float(str(x["Change"]).replace(",", ""))) for x in fm if num(x.get("TAIEX"))]
-    if not rec:
-        raise RuntimeError("大盤資料為空")
+    fresh = {}
+    for key, label, fn in (("twse", "證交所", twse_quotes), ("tpex", "櫃買", tpex_quotes)):
+        try:
+            q, src[key] = fn()
+            fresh.update(q)
+        except Exception as e:  # noqa: BLE001
+            if not (old.get("sources") or {}).get(key):
+                raise
+            src[key] = old["sources"][key]
+            failed.append(label)
+            print(f"WARN {label}這一輪抓不到，沿用上一版（{src[key]}）：{e}")
+    # 有來源沒抓到時，以上一版為底、蓋上這一輪抓到的（上市與上櫃代號不重疊）
+    quotes = {**old.get("quotes", {}), **fresh} if failed else fresh
+
+    rec = []
+    try:
+        fm = get_json(FMTQIK)
+        rec = [(roc(x["Date"]), float(str(x["TAIEX"]).replace(",", "")), float(str(x["Change"]).replace(",", ""))) for x in fm if num(x.get("TAIEX"))]
+        if not rec:
+            raise RuntimeError("大盤資料為空")
+    except Exception as e:  # noqa: BLE001
+        ot = old.get("taiex") or {}
+        if not ot.get("recent") or not ot.get("date"):
+            raise
+        # 用上一版的大盤當底（下面仍會試著用今天的 5 秒指數補上今天）
+        yr = int(ot["date"][:4])
+        rec = [(f"{yr}-{md}", c, 0.0) for md, c in ot["recent"]]
+        rec[-1] = (ot["date"], ot["close"], ot["change"])
+        failed.append("大盤")
+        print(f"WARN 大盤這一輪抓不到，沿用上一版（{ot['date']}）：{e}")
+    if len(failed) == 3:
+        raise RuntimeError("證交所、櫃買、大盤全部抓不到")
     d, close, chg = rec[-1]
     if d < today_str and dt.datetime.now(TW).weekday() < 5:
         # FMTQIK 還沒更新今天時，用今天 5 秒指數的最後一筆當收盤（13:30 那筆＝收盤指數）
