@@ -171,6 +171,26 @@ def tpex_revenue_latest():
     return _revenue("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O")
 
 
+# ---------- 每股盈餘（年初到該季的累計，元）----------
+def _eps(url, code_key, year_key, eps_key):
+    """官方開放資料只給「最新一季」的累計 EPS，每天抓、累積成歷史。date 欄放 YYYY-Qn。"""
+    out = []
+    for r in http(url):
+        code, y, q = (r.get(code_key) or "").strip(), str(r.get(year_key) or "").strip(), str(r.get("季別") or "").strip()
+        v = str(r.get(eps_key) or "").strip()
+        if is_stock(code) and y.isdigit() and q in ("1", "2", "3", "4") and v not in ("", "-", "--"):
+            out.append({"date": f"{int(y) + 1911:04d}-Q{q}", "code": code, "eps": n(v)})
+    return out
+
+
+def twse_eps_latest():
+    return _eps("https://openapi.twse.com.tw/v1/opendata/t187ap14_L", "公司代號", "年度", "基本每股盈餘(元)")
+
+
+def tpex_eps_latest():
+    return _eps("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap14_O", "SecuritiesCompanyCode", "Year", "基本每股盈餘")
+
+
 # ---------- 本益比（最新一天）----------
 def twse_per_latest():
     return {r["Code"].strip(): n(r.get("PEratio")) for r in http("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL")}
@@ -187,6 +207,7 @@ COLS = {
     "inst": ["date", "code", "foreign", "trust", "dealer"],
     "margin": ["date", "code", "margin_bal", "short_bal"],
     "revenue": ["date", "code", "revenue", "prev_year"],
+    "eps": ["date", "code", "eps"],
 }
 
 

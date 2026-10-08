@@ -1,6 +1,6 @@
 # python build_screen.py [--weekly]  → screen.json（選股頁的資料：股票池每一檔的所有篩選欄位；只含公開市場資料）
 # 先抓官方最新月營收追加到 data/revenue.csv、更新 data/industry.json，再把 signals.json（技術、籌碼）＋月營收＋本益比位置
-# ＋處置／注意股＋大盤大跌日表現合成一份。頁面拿這份自己套條件篩，這裡不做篩選、不排名。
+# ＋最新一季累計 EPS（官方，累積在 data/eps.csv）＋處置／注意股＋大盤大跌日表現合成一份。頁面拿這份自己套條件篩，這裡不做篩選、不排名。
 # 每週摘要（新進／掉出／轉弱／轉強）放在 changes 欄位，由戰情室顯示。--weekly：把本週本益比記進歷史。
 # 內容沒變就不會產生 commit（不寫時間戳，只寫各來源的資料日）。
 import bisect, datetime as dt, json, os, sys
@@ -38,6 +38,16 @@ def update_revenue(uni):
     return append_rows("revenue", [r for r in rows if r["code"] in uni]), ind
 
 
+def update_eps(uni):
+    rows = []
+    for f in (twse_eps_latest, tpex_eps_latest):
+        try:
+            rows += f()
+        except RuntimeError as e:
+            print("WARN 每股盈餘抓取失敗：", e)
+    return append_rows("eps", [r for r in rows if r["code"] in uni])
+
+
 def next_month(ym):
     y, m = int(ym[:4]), int(ym[5:])
     return f"{y + (m == 12):04d}-{m % 12 + 1:02d}"
@@ -47,6 +57,7 @@ def main():
     weekly = "--weekly" in sys.argv
     universe = load_universe().get("codes", [])
     added, ind = update_revenue(set(universe))
+    eps_added = update_eps(set(universe))
     sig = jload("signals.json", {"items": {}, "dates": {}})
     ann = jload("announcements.json", {})
     hist = jload(os.path.join(DATA, "per_hist.json"), {})      # {代號: 由小到大的歷史本益比（每週一筆）}，本機回補＋每週追加
@@ -65,6 +76,10 @@ def main():
         if n(r["prev_year"]) > 0:
             rev[r["code"]][r["date"]] = round((n(r["revenue"]) / n(r["prev_year"]) - 1) * 100, 1)
     latest_ym = max((ym for m in rev.values() for ym in m), default="")
+
+    eps = defaultdict(dict)   # {代號: {"YYYY-Qn": 年初到該季的累計 EPS}}
+    for r in read_csv("eps"):
+        eps[r["code"]][r["date"]] = n(r["eps"])
 
     inst = defaultdict(list)
     for r in read_csv("inst"):
@@ -95,6 +110,15 @@ def main():
             # 別人都公布兩個月了這檔還沒有＝資料斷了，不算
             if next_month(next_month(ym)) > latest_ym:
                 o["revYm"], o["yoy"] = ym, ys
+        # 每股盈餘：最新一季的累計值，和去年同期的累計值（有才放）
+        e = eps.get(c, {})
+        if e:
+            q = max(e)
+            o["epsQ"], o["eps"] = q, e[q]
+            pq = f"{int(q[:4]) - 1:04d}{q[4:]}"
+            # 名稱帶 * 的是面額不是 10 元（多半分割過），每股盈餘跟去年不能直接比，不放去年同期
+            if pq in e and not it["name"].endswith("*"):
+                o["epsPrev"] = e[pq]
         # 籌碼
         if "foreign7_pct" in it:
             o["f7"] = it["foreign7_pct"]
@@ -155,13 +179,13 @@ def main():
     jsave(os.path.join(DATA, "screen_week.json"), week)
 
     pool = [c for c, o in items.items() if in_pool(o)]
-    out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、yoy＝月營收年增%（新到舊）、perPct＝本益比在自己歷史的位置、"
+    out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、yoy＝月營收年增%（新到舊）、eps＝epsQ 那一季為止的年初累計每股盈餘（元）、epsPrev＝去年同期累計、perPct＝本益比在自己歷史的位置、"
                    "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；不是買賣建議。",
            "dates": {**sig.get("dates", {}), "revenue": latest_ym, "downday": jload(os.path.join(DATA, "downday.json"), {}).get("asOf", "")},
            "pool": {"yoy": POOL_YOY, "months": POOL_MONTHS, "minValue": MIN_VALUE / 1e8, "count": len(pool)},
            "prevDate": prev.get("date", ""), "changes": {k: sorted(v) for k, v in chg.items()}, "count": len(items), "items": items}
     jsave("screen.json", out)
-    print(f"OK screen {len(items)} 檔，營收池 {len(pool)} 檔，營收到 {latest_ym}（新增 {added} 列），變化 { {k: len(v) for k, v in chg.items()} }")
+    print(f"OK screen {len(items)} 檔，營收池 {len(pool)} 檔，營收到 {latest_ym}（新增 {added} 列），EPS 新增 {eps_added} 列，變化 { {k: len(v) for k, v in chg.items()} }")
 
     if weekly:
         for c, o in items.items():
