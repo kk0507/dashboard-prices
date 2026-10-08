@@ -154,6 +154,8 @@ def main():
              "gap20": it["gap_ma20"], "r20": it["r20"], "atr": it["atr_pct"]}
         if "ma60" in it:
             o["gap60"] = round((it["last"] / it["ma60"] - 1) * 100, 1)
+        if "r3" in it:
+            o["r3"], o["d3"] = it["r3"], it["d3"]
         # 月營收：最近幾個月的年增率（新到舊），中間缺月就斷
         m = rev.get(c, {})
         if m:
@@ -235,7 +237,7 @@ def main():
     jsave(os.path.join(DATA, "screen_week.json"), week)
 
     pool = [c for c, o in items.items() if in_pool(o)]
-    out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、yoy＝月營收年增%（新到舊）、eps＝epsQ 那一季為止的年初累計每股盈餘（元）、epsPrev＝去年同期累計、perPct＝本益比在自己歷史的位置、"
+    out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、r3＝最近 3 個交易日累計漲跌%、d3＝這 3 天每天的漲跌%（由舊到新）、yoy＝月營收年增%（新到舊）、eps＝epsQ 那一季為止的年初累計每股盈餘（元）、epsPrev＝去年同期累計、perPct＝本益比在自己歷史的位置、"
                    "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；themes＝人工歸類的題材與營收循環階段（stage 1 衰退擴大／2 衰退收斂／3 剛轉正／4 成長加速／5 成長減速，yoy／p3／p6＝題材內個股近 3 個月合計營收年增%的中位數：現在／3 個月前／6 個月前，月份見 dates.themes）；不是買賣建議。",
            "dates": {**sig.get("dates", {}), "revenue": latest_ym, "themes": theme_ym, "downday": jload(os.path.join(DATA, "downday.json"), {}).get("asOf", "")},
            "pool": {"yoy": POOL_YOY, "months": POOL_MONTHS, "minValue": MIN_VALUE / 1e8, "count": len(pool)},

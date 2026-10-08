@@ -77,6 +77,10 @@ def main():
         if len(vols) >= 20:
             it["vol20"] = round(statistics.mean(vols[-20:]))
         dates["prices"] = max(dates["prices"], it["date"])
+        if len(rows) >= 4:
+            # 最近 3 個交易日：累計漲跌%，以及每天各自的漲跌%（由舊到新）
+            it["r3"] = round((last / cl[-4] - 1) * 100, 1)
+            it["d3"] = [round((cl[i] / cl[i - 1] - 1) * 100, 1) for i in (-3, -2, -1)]
         if len(rows) >= 21:
             ma20 = statistics.mean(cl[-20:])
             tr = [max(hi[i] - lo[i], abs(hi[i] - cl[i - 1]), abs(lo[i] - cl[i - 1])) for i in range(1, len(rows))]
