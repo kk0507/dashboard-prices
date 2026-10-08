@@ -2,6 +2,7 @@
 # 先抓官方最新月營收追加到 data/revenue.csv、更新 data/industry.json，再把 signals.json（技術、籌碼）＋月營收＋本益比位置
 # ＋最新一季累計 EPS（官方，累積在 data/eps.csv）＋處置／注意股＋大盤大跌日表現合成一份。頁面拿這份自己套條件篩，這裡不做篩選、不排名。
 # 每週摘要（新進／掉出／轉弱／轉強）放在 changes 欄位，由戰情室顯示。--weekly：把本週本益比記進歷史。
+# themes.json（人工歸類的題材分組）＋月營收 → 每個題材的營收循環階段，放在 themes 欄位。
 # 內容沒變就不會產生 commit（不寫時間戳，只寫各來源的資料日）。
 import bisect, datetime as dt, json, os, sys
 from collections import defaultdict
@@ -53,10 +54,63 @@ def next_month(ym):
     return f"{y + (m == 12):04d}-{m % 12 + 1:02d}"
 
 
+def ym_shift(ym, k):
+    t = int(ym[:4]) * 12 + int(ym[5:]) - 1 + k
+    return f"{t // 12:04d}-{t % 12 + 1:02d}"
+
+
+STAGES = {1: "衰退擴大", 2: "衰退收斂", 3: "剛轉正", 4: "成長加速", 5: "成長減速"}
+
+
+def theme_stages(themes, raw):
+    """題材的營收循環階段。raw＝{代號: {"YYYY-MM": (當月營收, 去年同月營收)}}。
+    個股「近 3 個月合計營收年增」取題材中位數（至少 3 檔有資料才算），拿現在、3 個月前、6 個月前三個值分五個階段：
+    1 衰退擴大（年減且比 3 個月前差）、2 衰退收斂（年減但比 3 個月前好）、3 剛轉正（6 個月前還是年減）、4 成長加速、5 成長減速。
+    月份取「八成以上的題材股都公布了」的最新一個月，公布期中間不會只拿少數幾檔來算。"""
+    cnt = defaultdict(int)
+    for cs in themes.values():
+        for c in cs:
+            for ym in raw.get(c, {}):
+                cnt[ym] += 1
+    if not cnt:
+        return "", {}
+    full = max(ym for ym, k in cnt.items() if k >= 0.8 * max(cnt.values()))
+
+    def yoy3(c, ym):
+        v = [raw.get(c, {}).get(ym_shift(ym, -j)) for j in range(3)]
+        if None in v or sum(x[1] for x in v) <= 0:
+            return None
+        return sum(x[0] for x in v) / sum(x[1] for x in v) - 1
+
+    def med(cs, ym):
+        v = sorted(x for x in (yoy3(c, ym) for c in cs) if x is not None)
+        if len(v) < 3:
+            return None
+        return (v[len(v) // 2] + v[(len(v) - 1) // 2]) / 2
+
+    out = {}
+    for name, cs in themes.items():
+        o = {"codes": cs}
+        now, p3, p6 = med(cs, full), med(cs, ym_shift(full, -3)), med(cs, ym_shift(full, -6))
+        if None not in (now, p3, p6):
+            if now < 0:
+                st = 1 if now <= p3 else 2
+            elif p6 < 0:
+                st = 3
+            else:
+                st = 4 if now > p3 else 5
+            o.update(stage=st, yoy=round(now * 100, 1), p3=round(p3 * 100, 1), p6=round(p6 * 100, 1))
+        out[name] = o
+    return full, out
+
+
 def main():
     weekly = "--weekly" in sys.argv
     universe = load_universe().get("codes", [])
-    added, ind = update_revenue(set(universe))
+    themes = jload("themes.json", {})   # 題材分組（人工歸類，不是官方分類；一檔只放一組）
+    themes.pop("_note", None)
+    # 題材裡有些股票不在股票池（成交值不夠大），月營收照樣累積，題材的中位數才不會少算
+    added, ind = update_revenue(set(universe) | {c for cs in themes.values() for c in cs})
     eps_added = update_eps(set(universe))
     sig = jload("signals.json", {"items": {}, "dates": {}})
     ann = jload("announcements.json", {})
@@ -71,10 +125,12 @@ def main():
         except RuntimeError as e:
             print("WARN 本益比抓取失敗：", e)
 
-    rev = defaultdict(dict)
+    rev, raw = defaultdict(dict), defaultdict(dict)
     for r in read_csv("revenue"):
         if n(r["prev_year"]) > 0:
             rev[r["code"]][r["date"]] = round((n(r["revenue"]) / n(r["prev_year"]) - 1) * 100, 1)
+            raw[r["code"]][r["date"]] = (n(r["revenue"]), n(r["prev_year"]))
+    theme_ym, theme_out = theme_stages(themes, raw)
     latest_ym = max((ym for m in rev.values() for ym in m), default="")
 
     eps = defaultdict(dict)   # {代號: {"YYYY-Qn": 年初到該季的累計 EPS}}
@@ -180,10 +236,10 @@ def main():
 
     pool = [c for c, o in items.items() if in_pool(o)]
     out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、yoy＝月營收年增%（新到舊）、eps＝epsQ 那一季為止的年初累計每股盈餘（元）、epsPrev＝去年同期累計、perPct＝本益比在自己歷史的位置、"
-                   "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；不是買賣建議。",
-           "dates": {**sig.get("dates", {}), "revenue": latest_ym, "downday": jload(os.path.join(DATA, "downday.json"), {}).get("asOf", "")},
+                   "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；themes＝人工歸類的題材與營收循環階段（stage 1 衰退擴大／2 衰退收斂／3 剛轉正／4 成長加速／5 成長減速，yoy／p3／p6＝題材內個股近 3 個月合計營收年增%的中位數：現在／3 個月前／6 個月前，月份見 dates.themes）；不是買賣建議。",
+           "dates": {**sig.get("dates", {}), "revenue": latest_ym, "themes": theme_ym, "downday": jload(os.path.join(DATA, "downday.json"), {}).get("asOf", "")},
            "pool": {"yoy": POOL_YOY, "months": POOL_MONTHS, "minValue": MIN_VALUE / 1e8, "count": len(pool)},
-           "prevDate": prev.get("date", ""), "changes": {k: sorted(v) for k, v in chg.items()}, "count": len(items), "items": items}
+           "prevDate": prev.get("date", ""), "changes": {k: sorted(v) for k, v in chg.items()}, "count": len(items), "themes": theme_out, "items": items}
     jsave("screen.json", out)
     print(f"OK screen {len(items)} 檔，營收池 {len(pool)} 檔，營收到 {latest_ym}（新增 {added} 列），EPS 新增 {eps_added} 列，變化 { {k: len(v) for k, v in chg.items()} }")
 
