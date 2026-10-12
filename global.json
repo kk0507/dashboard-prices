@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-13T05:30:20+08:00",
+ "generatedAt": "2026-10-13T06:31:50+08:00",
  "usSession": "2026-10-12",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-12",
-   "time": "2026-10-13T04:59+08:00",
-   "price": 7857.0,
+   "time": "2026-10-13T06:21+08:00",
+   "price": 7860.75,
    "prev": 7859.75,
-   "change": -2.75,
-   "changePct": -0.03,
+   "change": 1.0,
+   "changePct": 0.01,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-12",
-   "time": "2026-10-13T04:59+08:00",
-   "price": 30877.5,
+   "time": "2026-10-13T06:21+08:00",
+   "price": 30901.0,
    "prev": 31108.75,
-   "change": -231.25,
-   "changePct": -0.74,
+   "change": -207.75,
+   "changePct": -0.67,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-10-12",
-   "time": "2026-10-13T04:59+08:00",
-   "price": 93.16,
+   "time": "2026-10-13T06:21+08:00",
+   "price": 93.26,
    "prev": 91.85,
-   "change": 1.31,
-   "changePct": 1.43,
+   "change": 1.41,
+   "changePct": 1.54,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-10-12",
-   "time": "2026-10-13T04:59+08:00",
-   "price": 105.92,
+   "time": "2026-10-13T06:12+08:00",
+   "price": 106.04,
    "prev": 104.72,
-   "change": 1.2,
-   "changePct": 1.15,
+   "change": 1.32,
+   "changePct": 1.26,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,8 +146,8 @@
    "prev": 453.31,
    "change": -8.96,
    "changePct": -1.98,
-   "twdRate": 31.932,
-   "twdEquiv": 2837.8,
+   "twdRate": 31.928,
+   "twdEquiv": 2837.4,
    "twClose": 2540.0,
    "twDate": "2026-10-12",
    "premiumPct": 11.7
@@ -157,7 +157,7 @@
    "sym": "TWNV26",
    "name": "富台期",
    "date": "2026-10-13",
-   "time": "2026-10-13T05:14+08:00",
+   "time": "2026-10-13T05:20+08:00",
    "price": 4291.0,
    "prev": 4327.25,
    "change": -36.25,
