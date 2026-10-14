@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-15T05:43:28+08:00",
+ "generatedAt": "2026-10-15T06:44:17+08:00",
  "usSession": "2026-10-14",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-14",
-   "time": "2026-10-15T04:59+08:00",
-   "price": 7765.25,
+   "time": "2026-10-15T06:34+08:00",
+   "price": 7751.25,
    "prev": 7855.75,
-   "change": -90.5,
-   "changePct": -1.15,
+   "change": -104.5,
+   "changePct": -1.33,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-14",
-   "time": "2026-10-15T04:59+08:00",
-   "price": 30139.25,
+   "time": "2026-10-15T06:34+08:00",
+   "price": 30019.0,
    "prev": 30791.5,
-   "change": -652.25,
-   "changePct": -2.12,
+   "change": -772.5,
+   "changePct": -2.51,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLX26.NYM",
    "name": "WTI原油",
    "date": "2026-10-14",
-   "time": "2026-10-15T04:59+08:00",
-   "price": 95.17,
+   "time": "2026-10-15T06:34+08:00",
+   "price": 95.08,
    "prev": 94.14,
-   "change": 1.03,
-   "changePct": 1.09,
+   "change": 0.94,
+   "changePct": 1.0,
    "contract": "CLX26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-10-14",
-   "time": "2026-10-15T04:59+08:00",
-   "price": 106.06,
+   "time": "2026-10-15T06:20+08:00",
+   "price": 105.91,
    "prev": 105.69,
-   "change": 0.37,
-   "changePct": 0.35,
+   "change": 0.22,
+   "changePct": 0.21,
    "contract": "BZZ26.NYM"
   },
   {
@@ -146,29 +146,15 @@
    "prev": 445.12,
    "change": -15.12,
    "changePct": -3.4,
-   "twdRate": 32.153,
-   "twdEquiv": 2765.2,
+   "twdRate": 32.164,
+   "twdEquiv": 2766.1,
    "twClose": 2490.0,
    "twDate": "2026-10-14",
    "premiumPct": 11.1
-  },
-  {
-   "group": "twFut",
-   "sym": "TWNV26",
-   "name": "富台期",
-   "date": "2026-10-15",
-   "time": "2026-10-15T05:20+08:00",
-   "price": 4188.0,
-   "prev": 4278.0,
-   "change": -90.0,
-   "changePct": -2.1,
-   "contract": "TWNV26.SGX",
-   "session": "夜間盤",
-   "baseDate": "2026-10-14",
-   "tmfBase": 48798.0,
-   "tmfEquiv": 47771
   }
  ],
  "estimate": null,
- "errors": []
+ "errors": [
+  "富台期：富台期 TWNV26 缺價格或 2026-10-14 結算價"
+ ]
 }
