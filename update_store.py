@@ -38,12 +38,17 @@ def main():
         raise RuntimeError("價量完全抓不到")
 
     # --- 股票池：成交值前 300 ∪ 舊池中仍在前 450 者（變動小、不會一直換）---
-    ranked = sorted([r for r in twp + tpp if is_stock(r["code"])], key=lambda r: -r["value"])
-    top = [r["code"] for r in ranked[:TOP_N]]
-    keep = set(r["code"] for r in ranked[:KEEP_N])
+    # 上市或上櫃任一邊抓不完整時不重排、沿用舊池：2026-10-14 清晨證交所抓不到，只用櫃買排名，上市股整批被踢出池子，訊號檔從 375 檔掉到 146 檔
     old = load_universe().get("codes", [])
-    universe = sorted(set(top) | (set(old) & keep))
-    save_universe({"codes": universe, "asOf": max([r["date"] for r in twp + tpp] or [""]), "top": TOP_N})
+    if len(twp) >= 800 and tpp:
+        ranked = sorted([r for r in twp + tpp if is_stock(r["code"])], key=lambda r: -r["value"])
+        top = [r["code"] for r in ranked[:TOP_N]]
+        keep = set(r["code"] for r in ranked[:KEEP_N])
+        universe = sorted(set(top) | (set(old) & keep))
+        save_universe({"codes": universe, "asOf": max([r["date"] for r in twp + tpp] or [""]), "top": TOP_N})
+    else:
+        universe = old
+        warn.append(f"價量不完整（上市 {len(twp)} 筆、上櫃 {len(tpp)} 筆），股票池沿用舊的 {len(old)} 檔")
     uni = set(universe)
 
     added = {"prices": append_rows("prices", [r for r in twp + tpp if r["code"] in uni])}

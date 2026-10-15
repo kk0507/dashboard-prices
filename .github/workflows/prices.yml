@@ -82,6 +82,8 @@ jobs:
           fi
 
       - name: Update market data store and signals (failure does not affect prices)
+        # 夜盤那兩輪（清晨 05:17、06:17）只抓期貨與全球快照，不重算股票資料：那時證交所資料常抓不到，會把股票池弄壞
+        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           FINALRUN=0; [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && FINALRUN=1
           if python update_store.py && python build_signals.py; then
