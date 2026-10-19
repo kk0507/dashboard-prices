@@ -1,0 +1,546 @@
+{
+ "note": "上市三大法人買賣金額（億元，正＝買超、負＝賣超），來源：證交所三大法人買賣金額統計表（BFI82U）；foreign＝外資及陸資＋外資自營商；dealer＝自營商自行買賣＋避險；證交所事後可能修正，最近 5 天每次重抓。最新在前。",
+ "updatedAt": "2026-10-19T12:35:36Z",
+ "items": [
+  {
+   "date": "2026-10-19",
+   "foreign": -767.43,
+   "trust": 241.42,
+   "dealerSelf": -60.23,
+   "dealerHedge": -302.4,
+   "dealer": -362.63,
+   "total": -888.64
+  },
+  {
+   "date": "2026-10-16",
+   "foreign": -461.47,
+   "trust": 110.48,
+   "dealerSelf": -101.79,
+   "dealerHedge": -232.35,
+   "dealer": -334.14,
+   "total": -685.14
+  },
+  {
+   "date": "2026-10-15",
+   "foreign": -3025.55,
+   "trust": 292.83,
+   "dealerSelf": -86.83,
+   "dealerHedge": -871.4,
+   "dealer": -958.23,
+   "total": -3690.96
+  },
+  {
+   "date": "2026-10-14",
+   "foreign": -200.37,
+   "trust": 160.27,
+   "dealerSelf": -25.1,
+   "dealerHedge": -89.61,
+   "dealer": -114.7,
+   "total": -154.81
+  },
+  {
+   "date": "2026-10-13",
+   "foreign": -1652.91,
+   "trust": 246.25,
+   "dealerSelf": -92.47,
+   "dealerHedge": -477.29,
+   "dealer": -569.76,
+   "total": -1976.41
+  },
+  {
+   "date": "2026-10-12",
+   "foreign": -521.98,
+   "trust": 71.41,
+   "dealerSelf": -7.99,
+   "dealerHedge": -134.95,
+   "dealer": -142.94,
+   "total": -593.51
+  },
+  {
+   "date": "2026-10-08",
+   "foreign": -758.52,
+   "trust": 30.09,
+   "dealerSelf": -21.32,
+   "dealerHedge": -165.99,
+   "dealer": -187.31,
+   "total": -915.75
+  },
+  {
+   "date": "2026-10-07",
+   "foreign": -130.44,
+   "trust": -33.23,
+   "dealerSelf": -13.67,
+   "dealerHedge": -64.29,
+   "dealer": -77.96,
+   "total": -241.64
+  },
+  {
+   "date": "2026-10-06",
+   "foreign": -66.57,
+   "trust": -142.65,
+   "dealerSelf": 36.12,
+   "dealerHedge": -18.91,
+   "dealer": 17.21,
+   "total": -192.01
+  },
+  {
+   "date": "2026-10-05",
+   "foreign": 718.97,
+   "trust": -52.93,
+   "dealerSelf": 14.15,
+   "dealerHedge": 95.33,
+   "dealer": 109.48,
+   "total": 775.52
+  },
+  {
+   "date": "2026-10-02",
+   "foreign": 26.22,
+   "trust": 57.69,
+   "dealerSelf": 47.41,
+   "dealerHedge": -27.15,
+   "dealer": 20.26,
+   "total": 104.17
+  },
+  {
+   "date": "2026-10-01",
+   "foreign": 219.37,
+   "trust": 58.65,
+   "dealerSelf": 32.37,
+   "dealerHedge": -15.78,
+   "dealer": 16.59,
+   "total": 294.62
+  },
+  {
+   "date": "2026-09-30",
+   "foreign": 308.57,
+   "trust": 82.91,
+   "dealerSelf": 13.81,
+   "dealerHedge": -1.41,
+   "dealer": 12.4,
+   "total": 403.88
+  },
+  {
+   "date": "2026-09-29",
+   "foreign": -625.83,
+   "trust": 5.79,
+   "dealerSelf": -8.09,
+   "dealerHedge": -155.94,
+   "dealer": -164.03,
+   "total": -784.06
+  },
+  {
+   "date": "2026-09-24",
+   "foreign": -329.65,
+   "trust": -128.23,
+   "dealerSelf": 42.36,
+   "dealerHedge": -28.97,
+   "dealer": 13.38,
+   "total": -444.49
+  },
+  {
+   "date": "2026-09-23",
+   "foreign": 373.13,
+   "trust": -47.59,
+   "dealerSelf": 22.25,
+   "dealerHedge": 35.99,
+   "dealer": 58.25,
+   "total": 383.79
+  },
+  {
+   "date": "2026-09-22",
+   "foreign": 453.21,
+   "trust": -3.66,
+   "dealerSelf": 35.08,
+   "dealerHedge": 123.46,
+   "dealer": 158.54,
+   "total": 608.09
+  },
+  {
+   "date": "2026-09-21",
+   "foreign": 204.79,
+   "trust": 45.96,
+   "dealerSelf": 111.48,
+   "dealerHedge": 115.82,
+   "dealer": 227.3,
+   "total": 478.05
+  },
+  {
+   "date": "2026-09-18",
+   "foreign": 869.94,
+   "trust": 81.53,
+   "dealerSelf": 141.82,
+   "dealerHedge": 101.22,
+   "dealer": 243.03,
+   "total": 1194.51
+  },
+  {
+   "date": "2026-09-17",
+   "foreign": 121.85,
+   "trust": 117.03,
+   "dealerSelf": 58.94,
+   "dealerHedge": -43.16,
+   "dealer": 15.78,
+   "total": 254.66
+  },
+  {
+   "date": "2026-09-16",
+   "foreign": -179.8,
+   "trust": 106.46,
+   "dealerSelf": -36.25,
+   "dealerHedge": -93.49,
+   "dealer": -129.74,
+   "total": -203.09
+  },
+  {
+   "date": "2026-09-15",
+   "foreign": -626.99,
+   "trust": -19.91,
+   "dealerSelf": 13.01,
+   "dealerHedge": -155.07,
+   "dealer": -142.06,
+   "total": -788.96
+  },
+  {
+   "date": "2026-09-14",
+   "foreign": -369.64,
+   "trust": 36.96,
+   "dealerSelf": -39.78,
+   "dealerHedge": -111.14,
+   "dealer": -150.93,
+   "total": -483.61
+  },
+  {
+   "date": "2026-09-11",
+   "foreign": -892.7,
+   "trust": 82.14,
+   "dealerSelf": -50.39,
+   "dealerHedge": -251.62,
+   "dealer": -302.02,
+   "total": -1112.59
+  },
+  {
+   "date": "2026-09-10",
+   "foreign": -383.34,
+   "trust": 33.51,
+   "dealerSelf": -35.61,
+   "dealerHedge": -102.03,
+   "dealer": -137.64,
+   "total": -487.47
+  },
+  {
+   "date": "2026-09-09",
+   "foreign": 209.24,
+   "trust": 20.85,
+   "dealerSelf": -12.18,
+   "dealerHedge": -6.66,
+   "dealer": -18.84,
+   "total": 211.25
+  },
+  {
+   "date": "2026-09-08",
+   "foreign": 132.69,
+   "trust": -72.43,
+   "dealerSelf": -28.85,
+   "dealerHedge": -156.55,
+   "dealer": -185.4,
+   "total": -125.15
+  },
+  {
+   "date": "2026-09-07",
+   "foreign": 883.08,
+   "trust": 87.24,
+   "dealerSelf": 59.72,
+   "dealerHedge": 97.16,
+   "dealer": 156.87,
+   "total": 1127.19
+  },
+  {
+   "date": "2026-09-04",
+   "foreign": 562.13,
+   "trust": -9.11,
+   "dealerSelf": 15.06,
+   "dealerHedge": 48.64,
+   "dealer": 63.7,
+   "total": 616.72
+  },
+  {
+   "date": "2026-09-03",
+   "foreign": -481.46,
+   "trust": 6.94,
+   "dealerSelf": -56.79,
+   "dealerHedge": -110.29,
+   "dealer": -167.08,
+   "total": -641.6
+  },
+  {
+   "date": "2026-09-02",
+   "foreign": -913.55,
+   "trust": -35.28,
+   "dealerSelf": 1.56,
+   "dealerHedge": -205.18,
+   "dealer": -203.62,
+   "total": -1152.44
+  },
+  {
+   "date": "2026-09-01",
+   "foreign": 267.08,
+   "trust": 136.0,
+   "dealerSelf": 31.57,
+   "dealerHedge": 131.72,
+   "dealer": 163.3,
+   "total": 566.37
+  },
+  {
+   "date": "2026-08-31",
+   "foreign": -143.92,
+   "trust": -40.0,
+   "dealerSelf": -11.79,
+   "dealerHedge": -62.74,
+   "dealer": -74.53,
+   "total": -258.46
+  },
+  {
+   "date": "2026-08-28",
+   "foreign": 417.54,
+   "trust": -1.97,
+   "dealerSelf": 1.35,
+   "dealerHedge": 41.36,
+   "dealer": 42.71,
+   "total": 458.28
+  },
+  {
+   "date": "2026-08-27",
+   "foreign": 490.94,
+   "trust": -14.5,
+   "dealerSelf": 59.83,
+   "dealerHedge": 90.52,
+   "dealer": 150.35,
+   "total": 626.79
+  },
+  {
+   "date": "2026-08-26",
+   "foreign": 366.13,
+   "trust": 33.66,
+   "dealerSelf": 47.39,
+   "dealerHedge": 131.95,
+   "dealer": 179.34,
+   "total": 579.13
+  },
+  {
+   "date": "2026-08-25",
+   "foreign": -7.87,
+   "trust": -39.84,
+   "dealerSelf": 9.97,
+   "dealerHedge": -9.37,
+   "dealer": 0.6,
+   "total": -47.11
+  },
+  {
+   "date": "2026-08-24",
+   "foreign": -157.36,
+   "trust": 30.55,
+   "dealerSelf": -0.15,
+   "dealerHedge": -43.18,
+   "dealer": -43.33,
+   "total": -170.14
+  },
+  {
+   "date": "2026-08-21",
+   "foreign": 283.05,
+   "trust": 21.01,
+   "dealerSelf": 29.1,
+   "dealerHedge": 0.13,
+   "dealer": 29.23,
+   "total": 333.29
+  },
+  {
+   "date": "2026-08-20",
+   "foreign": 73.18,
+   "trust": -20.48,
+   "dealerSelf": -21.92,
+   "dealerHedge": -39.16,
+   "dealer": -61.08,
+   "total": -8.38
+  },
+  {
+   "date": "2026-08-19",
+   "foreign": -416.39,
+   "trust": -166.01,
+   "dealerSelf": -39.62,
+   "dealerHedge": -131.56,
+   "dealer": -171.18,
+   "total": -753.59
+  },
+  {
+   "date": "2026-08-18",
+   "foreign": -119.86,
+   "trust": 38.27,
+   "dealerSelf": -21.73,
+   "dealerHedge": -154.34,
+   "dealer": -176.07,
+   "total": -257.66
+  },
+  {
+   "date": "2026-08-17",
+   "foreign": 454.47,
+   "trust": -177.77,
+   "dealerSelf": 35.4,
+   "dealerHedge": -21.35,
+   "dealer": 14.05,
+   "total": 290.76
+  },
+  {
+   "date": "2026-08-14",
+   "foreign": 453.51,
+   "trust": 79.73,
+   "dealerSelf": -27.36,
+   "dealerHedge": 10.75,
+   "dealer": -16.61,
+   "total": 516.63
+  },
+  {
+   "date": "2026-08-13",
+   "foreign": 756.95,
+   "trust": -15.02,
+   "dealerSelf": 32.58,
+   "dealerHedge": 118.03,
+   "dealer": 150.61,
+   "total": 892.54
+  },
+  {
+   "date": "2026-08-12",
+   "foreign": 110.21,
+   "trust": 22.76,
+   "dealerSelf": 11.21,
+   "dealerHedge": 75.8,
+   "dealer": 87.01,
+   "total": 219.98
+  },
+  {
+   "date": "2026-08-11",
+   "foreign": 223.29,
+   "trust": 32.24,
+   "dealerSelf": 10.55,
+   "dealerHedge": 14.06,
+   "dealer": 24.6,
+   "total": 280.13
+  },
+  {
+   "date": "2026-08-10",
+   "foreign": 517.41,
+   "trust": 34.01,
+   "dealerSelf": 52.78,
+   "dealerHedge": 131.9,
+   "dealer": 184.68,
+   "total": 736.1
+  },
+  {
+   "date": "2026-08-07",
+   "foreign": -407.16,
+   "trust": -12.02,
+   "dealerSelf": 7.17,
+   "dealerHedge": -16.86,
+   "dealer": -9.68,
+   "total": -428.86
+  },
+  {
+   "date": "2026-08-06",
+   "foreign": 20.2,
+   "trust": 94.08,
+   "dealerSelf": -1.05,
+   "dealerHedge": -62.08,
+   "dealer": -63.13,
+   "total": 51.15
+  },
+  {
+   "date": "2026-08-05",
+   "foreign": 903.08,
+   "trust": 112.66,
+   "dealerSelf": -23.27,
+   "dealerHedge": 37.84,
+   "dealer": 14.57,
+   "total": 1030.31
+  },
+  {
+   "date": "2026-08-04",
+   "foreign": -57.32,
+   "trust": 271.65,
+   "dealerSelf": -86.74,
+   "dealerHedge": -107.54,
+   "dealer": -194.29,
+   "total": 20.05
+  },
+  {
+   "date": "2026-08-03",
+   "foreign": -191.91,
+   "trust": 233.25,
+   "dealerSelf": -58.27,
+   "dealerHedge": -148.27,
+   "dealer": -206.53,
+   "total": -165.2
+  },
+  {
+   "date": "2026-07-31",
+   "foreign": 675.54,
+   "trust": 360.2,
+   "dealerSelf": 57.41,
+   "dealerHedge": -220.0,
+   "dealer": -162.6,
+   "total": 873.14
+  },
+  {
+   "date": "2026-07-30",
+   "foreign": -483.12,
+   "trust": 139.97,
+   "dealerSelf": -5.04,
+   "dealerHedge": -147.22,
+   "dealer": -152.27,
+   "total": -495.41
+  },
+  {
+   "date": "2026-07-29",
+   "foreign": -222.52,
+   "trust": 57.06,
+   "dealerSelf": -10.23,
+   "dealerHedge": -175.76,
+   "dealer": -185.99,
+   "total": -351.45
+  },
+  {
+   "date": "2026-07-28",
+   "foreign": -874.85,
+   "trust": 16.12,
+   "dealerSelf": -12.26,
+   "dealerHedge": -305.04,
+   "dealer": -317.3,
+   "total": -1176.03
+  },
+  {
+   "date": "2026-07-27",
+   "foreign": 80.4,
+   "trust": 4.81,
+   "dealerSelf": -4.42,
+   "dealerHedge": -74.15,
+   "dealer": -78.57,
+   "total": 6.65
+  },
+  {
+   "date": "2026-07-24",
+   "foreign": -609.5,
+   "trust": 47.63,
+   "dealerSelf": 2.76,
+   "dealerHedge": -114.27,
+   "dealer": -111.51,
+   "total": -673.38
+  },
+  {
+   "date": "2026-07-23",
+   "foreign": 69.58,
+   "trust": 73.7,
+   "dealerSelf": 29.67,
+   "dealerHedge": 12.27,
+   "dealer": 41.94,
+   "total": 185.22
+  }
+ ]
+}
