@@ -193,6 +193,15 @@ def main():
         if "chip" in a and "tech" in a:
             o["chip"], o["tech"] = a["chip"]["s"], a["tech"]["s"]
             o["ct"] = round((4 * o["chip"] + 2 * o["tech"]) / 6, 1)
+        # 回測有用的因素（build_signals 算好）：營收分、外資賣壓、20 日波動度、標籤
+        if "rev" in a:
+            o["rs"] = a["rev"]["s"]
+        if "fsell" in a:
+            o["fs"] = a["fsell"]["s"]
+        if "hv20" in it:
+            o["hv"] = it["hv20"]
+        if it.get("flags"):
+            o["flags"] = it["flags"]
         # 本益比與它在自己歷史裡的位置（0＝最便宜、100＝最貴）
         p = per.get(c, 0)
         if p > 0:
@@ -238,7 +247,7 @@ def main():
 
     pool = [c for c, o in items.items() if in_pool(o)]
     out = {"note": "股票池每一檔的篩選欄位（公開市場資料計算）；value＝20 日均成交值（億）、r3＝最近 3 個交易日累計漲跌%、d3＝這 3 天每天的漲跌%（由舊到新）、yoy＝月營收年增%（新到舊）、eps＝epsQ 那一季為止的年初累計每股盈餘（元）、epsPrev＝去年同期累計、perPct＝本益比在自己歷史的位置、"
-                   "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；themes＝人工歸類的題材與營收循環階段（stage 1 衰退擴大／2 衰退收斂／3 剛轉正／4 成長加速／5 成長減速，yoy／p3／p6＝題材內個股近 3 個月合計營收年增%的中位數：現在／3 個月前／6 個月前，月份見 dates.themes）；不是買賣建議。",
+                   "dd＝大盤單日跌 2% 以上那些天的平均漲跌%；rs＝營收分、fs＝外資賣壓（只扣不加）、hv＝20 日波動度（年化%）、flags＝標籤，算法見 signals.json；themes＝人工歸類的題材與營收循環階段（stage 1 衰退擴大／2 衰退收斂／3 剛轉正／4 成長加速／5 成長減速，yoy／p3／p6＝題材內個股近 3 個月合計營收年增%的中位數：現在／3 個月前／6 個月前，月份見 dates.themes）；不是買賣建議。",
            "dates": {**sig.get("dates", {}), "revenue": latest_ym, "themes": theme_ym, "downday": jload(os.path.join(DATA, "downday.json"), {}).get("asOf", "")},
            "pool": {"yoy": POOL_YOY, "months": POOL_MONTHS, "minValue": MIN_VALUE / 1e8, "count": len(pool)},
            "prevDate": prev.get("date", ""), "changes": {k: sorted(v) for k, v in chg.items()}, "count": len(items), "themes": theme_out, "items": items}
