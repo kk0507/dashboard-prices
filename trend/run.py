@@ -104,15 +104,35 @@ def changed(rows_):
             if r.get("applies", True) and r["prev"] is not None and r["state"] is not None and r["prev"] != r["state"]]
 
 
+def plain(doc_):
+    """放在 Discord 最上面的白話結論（兩句）：分數與變化、歷史上像今天這樣後面通常怎麼走"""
+    s, sp = doc_["score"], doc_["scorePrev"]
+    head = f"分數 {sgn(s)}（{score_label(s)}）"
+    if sp is not None and s is not None and s != sp:
+        why = [f"{r['name'].split('（')[0]}變{LAB[r['state']]}" for r in doc_["predict"]
+               if r.get("applies", True) and r["prev"] is not None and r["state"] is not None and r["prev"] != r["state"]]
+        head += f"，比前一天{'好' if s > sp else '差'}一點" + (f"（{'、'.join(why)}）" if why else "")
+    a, b = doc_.get("analog"), doc_.get("baseline")
+    if not (a and b):
+        return f"👉 白話：{head}。"
+    du = a["up20"] - b["up20"]
+    up = "跟平常差不多" if abs(du) < 5 else ("比平常低" if du < 0 else "比平常高")
+    dm = a["mn20"] - b["mn20"]
+    risk = (f"但中途比較容易先跌一段，大約跌到 {round(a['mn20Pts'], -2):,} 附近" if dm < -0.5
+            else "中途的回檔通常比平常淺" if dm > 0.5 else "中途的回檔跟平常差不多")
+    return f"👉 白話：{head}。歷史上像今天這樣，20 天後上漲的機率{up}，{risk}。"
+
+
 if doc["asOf"] == today:
     if state.get("daily") != today:
         pc = changed(doc["predict"])
         if doc["score"] != doc["scorePrev"] and state.get("change") != today:
             msgs.append(f"⚠️ **趨勢分數變了：{sgn(doc['scorePrev'])} → {sgn(doc['score'])}（{score_label(doc['score'])}）**　{md(today)} 收盤\n"
-                        f"原因：{'、'.join(pc) if pc else '預測指標狀態改變'}\n{doc['predLine']}")
+                        f"{plain(doc)}\n原因：{'、'.join(pc) if pc else '預測指標狀態改變'}")
             state["change"] = today
         a, b = doc.get("analog"), doc.get("baseline")
-        lines = [f"📊 **趨勢 {md(today)} 收盤**｜加權 {doc['taiex']:,.0f}（離 60 天高點 {pct(doc['dd60'])}，{'回檔中' if doc['pullback'] else '非回檔'}）",
+        lines = [plain(doc), "",
+                 f"📊 **趨勢 {md(today)} 收盤**｜加權 {doc['taiex']:,.0f}（離 60 天高點 {pct(doc['dd60'])}，{'回檔中' if doc['pullback'] else '非回檔'}）",
                  f"預測分數 **{sgn(doc['score'])}**（{score_label(doc['score'])}）" + ("" if doc["score"] == doc["scorePrev"] else f"，前一天 {sgn(doc['scorePrev'])}")]
         for p in doc["predict"]:
             if not p["applies"]:
