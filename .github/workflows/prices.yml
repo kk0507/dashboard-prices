@@ -27,6 +27,10 @@ on:
         description: "產生選股名單（當作每週那一次）"
         type: boolean
         default: false
+      trend:
+        description: "算趨勢檢查（trend.json＋Discord）"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -38,7 +42,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
@@ -108,6 +112,20 @@ jobs:
           W=""; { [ "$(date -u +%u)" = "5" ] || [ "${{ inputs.screen }}" = "true" ]; } && W="--weekly"
           python build_screen.py $W || echo "⚠️ 選股名單今天更新失敗（不影響收盤價）" >> alert.txt
 
+      - name: Build trend check (21:47 run only; failure does not affect prices)
+        # 趨勢確認系統：補 data/trend/*.csv → trend.json；摘要與分數變動發到趨勢專用的 Discord 機器人
+        if: github.event.schedule == '47 13 * * 1-5' || inputs.trend == true
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+          DISCORD_TREND_WEBHOOK: ${{ secrets.DISCORD_TREND_WEBHOOK }}
+        run: |
+          python trend/run.py || {
+            curl -sS -H "Content-Type: application/json" \
+              -d "{\"content\":\"⚠️ 趨勢檢查今天沒更新成功（不影響價格），戰情室趨勢分頁會停在上一次。紀錄：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+              "$DISCORD_TREND_WEBHOOK"
+            true
+          }
+
       - name: Commit if changed
         run: |
           git config user.name "prices-bot"
@@ -118,6 +136,7 @@ jobs:
           [ -s futures.json ] && git add futures.json
           [ -s global.json ] && git add global.json
           [ -s market_inst.json ] && git add market_inst.json
+          [ -s trend.json ] && git add trend.json
           if git diff --cached --quiet; then
             echo "no change"
           else
