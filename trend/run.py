@@ -8,6 +8,7 @@ import os
 import runpy
 import statistics as st
 import sys
+import time
 from datetime import date
 
 import requests
@@ -42,6 +43,33 @@ def pct(v, nd=1):
 # ---------- 1) 補資料 ----------
 latest = data.update()
 print("資料最新日期", latest)
+
+# 預測分數要用的資料（Put/Call、散戶多空比）一定要跟加權同一天。沒到齊就等 2 分鐘重抓一次；
+# 還是沒有就不算分數、不覆蓋 trend.json（戰情室維持上一次），只發一則說明——寧可停一天，也不發錯的分數（10/21 教訓）
+NEED = {"pcr": "Put/Call", "futures": "散戶多空比"}
+
+
+def missing_of(lt):
+    return [n for k, n in NEED.items() if (lt.get(k) or "") < (lt.get("taiex") or "")]
+
+
+if missing_of(latest):
+    print("預測資料沒到齊，2 分鐘後重抓：", missing_of(latest))
+    time.sleep(120)
+    latest = data.update()
+    print("資料最新日期（重抓）", latest)
+if missing_of(latest) and latest.get("taiex") == data.TODAY:
+    st0 = json.load(open(NOTIFY, encoding="utf-8")) if os.path.exists(NOTIFY) else {}
+    hook0 = os.environ.get("DISCORD_TREND_WEBHOOK", "")
+    old = json.load(open(OUT, encoding="utf-8")).get("asOf") if os.path.exists(OUT) else None
+    msg = (f"⚠️ 趨勢 {md(data.TODAY)}：{'、'.join(missing_of(latest))} 今天還沒抓到，分數先暫停一天，"
+           f"戰情室維持 {md(old) if old else '上一次'} 的讀數，不會寫進算錯的分數。")
+    print(msg)
+    if hook0 and old != data.TODAY and st0.get("incomplete") != data.TODAY:  # 已經有今天正確的讀數（例如手動補過）就安靜保留
+        requests.post(hook0, json={"content": msg}, timeout=30).raise_for_status()
+        st0["incomplete"] = data.TODAY
+        json.dump(st0, open(NOTIFY, "w", encoding="utf-8"), ensure_ascii=False)
+    sys.exit(0)
 
 # ---------- 2) 算今天 ----------
 tmp = os.path.join(data.DDIR, "_trend_doc.json")

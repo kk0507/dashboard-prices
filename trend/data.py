@@ -109,31 +109,50 @@ def fetch_finmind(start):
     return out
 
 
+PCR_URL = "https://www.taifex.com.tw/cht/3/pcRatioDown"
+
+
+def _pcr_rows(text):
+    out = {}
+    for line in text.splitlines():
+        c = line.split(",")
+        if len(c) >= 7 and re.match(r"\d{4}/\d{2}/\d{2}", c[0]):
+            out[c[0].replace("/", "-")] = {"vol": float(c[3]), "oi": float(c[6])}
+    return out
+
+
 def fetch_pcr(start_month):
-    """start_month＝(年, 月)，抓到這個月；期交所一次最多查一個月"""
+    """start_month＝(年, 月)，抓到這個月；期交所一次最多查一個月。
+    兩種抓法輪流試：先開查詢頁拿 cookie 再下載（本機可以），以及 fetch_futures.py 那種直接 POST（GitHub 上一直正常）；
+    每個月印出抓到幾筆，查問題用"""
     s = requests.Session()
     hd = dict(H, Referer="https://www.taifex.com.tw/cht/3/pcRatio")
-    s.get("https://www.taifex.com.tw/cht/3/pcRatio", headers=hd, timeout=60)
+    try:
+        s.get("https://www.taifex.com.tw/cht/3/pcRatio", headers=hd, timeout=60)
+    except requests.RequestException as e:
+        print("PCR 查詢頁打不開", e)
     out = {}
     y, m = start_month
     end = datetime.strptime(TODAY, "%Y-%m-%d")
     while (y, m) <= (end.year, end.month):
         a = f"{y}/{m:02d}/01"
         b = (datetime(y + (m == 12), m % 12 + 1, 1) - timedelta(days=1)).strftime("%Y/%m/%d")
-        t = None
-        for _ in range(3):
+        form = {"queryStartDate": a, "queryEndDate": b, "down_type": ""}
+        rows, note = {}, ""
+        for i, post in enumerate((lambda: s.post(PCR_URL, data=form, headers=hd, timeout=60),
+                                  lambda: requests.post(PCR_URL, data=form, headers=H, timeout=60)) * 2):
             try:
-                t = s.post("https://www.taifex.com.tw/cht/3/pcRatioDown",
-                           data={"queryStartDate": a, "queryEndDate": b, "down_type": ""}, headers=hd, timeout=60).content.decode("big5", "ignore")
-                break
-            except requests.RequestException:
-                time.sleep(3)
-        if t is None:
-            raise SystemExit(f"期交所 Put/Call {a} 抓不到")
-        for line in t.splitlines():
-            c = line.split(",")
-            if len(c) >= 7 and re.match(r"\d{4}/\d{2}/\d{2}", c[0]):
-                out[c[0].replace("/", "-")] = {"vol": float(c[3]), "oi": float(c[6])}
+                r = post()
+                rows = _pcr_rows(r.content.decode("big5", "ignore"))
+                note = f"第 {i + 1} 次 HTTP {r.status_code} {len(r.content)} bytes"
+                if rows:
+                    break
+                note += "，開頭：" + r.content[:120].decode("big5", "ignore").replace("\n", " ")
+            except requests.RequestException as e:
+                note = f"第 {i + 1} 次 {type(e).__name__}"
+            time.sleep(3)
+        print(f"PCR {a[:7]}：{len(rows)} 筆，最後 {max(rows) if rows else '—'}（{note}）")
+        out.update(rows)
         time.sleep(0.4)
         y, m = y + (m == 12), m % 12 + 1
     return out
