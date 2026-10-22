@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-23T05:43:30+08:00",
+ "generatedAt": "2026-10-23T06:43:45+08:00",
  "usSession": "2026-10-22",
  "items": [
   {
@@ -93,11 +93,11 @@
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-22",
-   "time": "2026-10-23T04:59+08:00",
-   "price": 7703.75,
+   "time": "2026-10-23T06:33+08:00",
+   "price": 7710.0,
    "prev": 7800.25,
-   "change": -96.5,
-   "changePct": -1.24,
+   "change": -90.25,
+   "changePct": -1.16,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-22",
-   "time": "2026-10-23T04:59+08:00",
-   "price": 29094.75,
+   "time": "2026-10-23T06:33+08:00",
+   "price": 29121.5,
    "prev": 30007.0,
-   "change": -912.25,
-   "changePct": -3.04,
+   "change": -885.5,
+   "changePct": -2.95,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLZ26.NYM",
    "name": "WTI原油",
    "date": "2026-10-22",
-   "time": "2026-10-23T04:59+08:00",
-   "price": 99.1,
+   "time": "2026-10-23T06:33+08:00",
+   "price": 98.99,
    "prev": 97.15,
-   "change": 1.95,
-   "changePct": 2.01,
+   "change": 1.84,
+   "changePct": 1.89,
    "contract": "CLZ26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZZ26.NYM",
    "name": "布蘭特原油",
    "date": "2026-10-22",
-   "time": "2026-10-23T04:59+08:00",
-   "price": 112.87,
+   "time": "2026-10-23T06:27+08:00",
+   "price": 112.98,
    "prev": 108.82,
-   "change": 4.05,
-   "changePct": 3.72,
+   "change": 4.16,
+   "changePct": 3.82,
    "contract": "BZZ26.NYM"
   },
   {
