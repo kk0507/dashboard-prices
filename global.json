@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-27T08:26:09+08:00",
+ "generatedAt": "2026-10-27T09:30:50+08:00",
  "usSession": "2026-10-26",
  "items": [
   {
@@ -71,32 +71,32 @@
    "sym": "^N225",
    "name": "日經225",
    "date": "2026-10-27",
-   "time": "2026-10-27T08:11+08:00",
-   "price": 63034.94,
+   "time": "2026-10-27T09:15+08:00",
+   "price": 63683.97,
    "prev": 62693.1602,
-   "change": 341.7798,
-   "changePct": 0.55
+   "change": 990.8098,
+   "changePct": 1.58
   },
   {
    "group": "asia",
    "sym": "^KS11",
    "name": "韓國KOSPI",
    "date": "2026-10-27",
-   "time": "2026-10-27T08:06+08:00",
-   "price": 5677.51,
+   "time": "2026-10-27T09:10+08:00",
+   "price": 5689.3,
    "prev": 5550.2998,
-   "change": 127.2102,
-   "changePct": 2.29
+   "change": 139.0002,
+   "changePct": 2.5
   },
   {
    "group": "usFut",
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-26",
-   "time": "2026-10-27T08:16+08:00",
-   "price": 7725.5,
+   "time": "2026-10-27T09:20+08:00",
+   "price": 7725.75,
    "prev": 7659.75,
-   "change": 65.75,
+   "change": 66.0,
    "changePct": 0.86,
    "contract": "ESZ26.CME"
   },
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-26",
-   "time": "2026-10-27T08:16+08:00",
-   "price": 29553.25,
+   "time": "2026-10-27T09:20+08:00",
+   "price": 29507.5,
    "prev": 29117.75,
-   "change": 435.5,
-   "changePct": 1.5,
+   "change": 389.75,
+   "changePct": 1.34,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLZ26.NYM",
    "name": "WTI原油",
    "date": "2026-10-26",
-   "time": "2026-10-27T08:16+08:00",
-   "price": 101.18,
+   "time": "2026-10-27T09:20+08:00",
+   "price": 100.98,
    "prev": 103.27,
-   "change": -2.09,
-   "changePct": -2.02,
+   "change": -2.29,
+   "changePct": -2.22,
    "contract": "CLZ26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZF27.NYM",
    "name": "布蘭特原油",
    "date": "2026-10-26",
-   "time": "2026-10-27T08:16+08:00",
-   "price": 110.05,
+   "time": "2026-10-27T09:20+08:00",
+   "price": 109.85,
    "prev": 111.7,
-   "change": -1.65,
-   "changePct": -1.48,
+   "change": -1.85,
+   "changePct": -1.66,
    "contract": "BZF27.NYM"
   },
   {
@@ -146,11 +146,27 @@
    "prev": 418.51,
    "change": 5.86,
    "changePct": 1.4,
-   "twdRate": 32.534,
-   "twdEquiv": 2761.3,
+   "twdRate": 32.581,
+   "twdEquiv": 2765.3,
    "twClose": 2385.0,
    "twDate": "2026-10-22",
-   "premiumPct": 15.8
+   "premiumPct": 15.9
+  },
+  {
+   "group": "twFut",
+   "sym": "TWNV26",
+   "name": "富台期",
+   "date": "2026-10-27",
+   "time": "2026-10-27T09:15+08:00",
+   "price": 4063.25,
+   "prev": 4024.75,
+   "change": 38.5,
+   "changePct": 0.96,
+   "contract": "TWNV26.SGX",
+   "session": "日間盤",
+   "baseDate": "2026-10-22",
+   "tmfBase": 46270.0,
+   "tmfEquiv": 46713
   }
  ],
  "estimate": {
@@ -177,7 +193,5 @@
   "high": 46209,
   "note": "粗估：微台大約是費半漲跌的0.36倍、那指的0.67倍，約四成的波動解釋不到"
  },
- "errors": [
-  "富台期：富台期 TWNV26 缺價格或 2026-10-22 結算價"
- ]
+ "errors": []
 }
