@@ -1,172 +1,156 @@
 {
- "generatedAt": "2026-10-24T08:44:30+08:00",
- "usSession": "2026-10-23",
+ "generatedAt": "2026-10-27T08:26:09+08:00",
+ "usSession": "2026-10-26",
  "items": [
   {
    "group": "us",
    "sym": "^SOX",
    "name": "費城半導體",
-   "date": "2026-10-23",
-   "time": "2026-10-24T05:15+08:00",
-   "price": 10779.464,
-   "prev": 10731.9805,
-   "change": 47.4835,
-   "changePct": 0.44
+   "date": "2026-10-26",
+   "time": "2026-10-27T05:15+08:00",
+   "price": 11083.47,
+   "prev": 10779.46,
+   "change": 304.01,
+   "changePct": 2.82
   },
   {
    "group": "us",
    "sym": "^IXIC",
    "name": "那斯達克",
-   "date": "2026-10-23",
-   "time": "2026-10-24T05:15+08:00",
-   "price": 25955.342,
-   "prev": 26008.8594,
-   "change": -53.5174,
-   "changePct": -0.21
+   "date": "2026-10-26",
+   "time": "2026-10-27T05:15+08:00",
+   "price": 26169.38,
+   "prev": 25955.3398,
+   "change": 214.0402,
+   "changePct": 0.82
   },
   {
    "group": "us",
    "sym": "^GSPC",
    "name": "標普500",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:38+08:00",
-   "price": 7623.68,
-   "prev": 7663.4302,
-   "change": -39.7502,
-   "changePct": -0.52
+   "date": "2026-10-26",
+   "time": "2026-10-27T04:43+08:00",
+   "price": 7676.77,
+   "prev": 7623.6802,
+   "change": 53.0898,
+   "changePct": 0.7
   },
   {
    "group": "us",
    "sym": "^DJI",
    "name": "道瓊",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:42+08:00",
-   "price": 52215.16,
-   "prev": 52867.9805,
-   "change": -652.8205,
-   "changePct": -1.23
+   "date": "2026-10-26",
+   "time": "2026-10-27T04:43+08:00",
+   "price": 52361.58,
+   "prev": 52215.1602,
+   "change": 146.4198,
+   "changePct": 0.28
   },
   {
    "group": "rates",
    "sym": "^TNX",
    "name": "美債10年",
-   "date": "2026-10-23",
-   "time": "2026-10-24T02:59+08:00",
-   "price": 4.988,
-   "prev": 4.953,
-   "changeBp": 3.5
+   "date": "2026-10-26",
+   "time": "2026-10-27T02:59+08:00",
+   "price": 4.986,
+   "prev": 4.988,
+   "changeBp": -0.2
   },
   {
    "group": "rates",
    "sym": "^TYX",
    "name": "美債30年",
-   "date": "2026-10-23",
-   "time": "2026-10-24T02:59+08:00",
-   "price": 5.315,
-   "prev": 5.287,
-   "changeBp": 2.8
+   "date": "2026-10-26",
+   "time": "2026-10-27T02:59+08:00",
+   "price": 5.301,
+   "prev": 5.315,
+   "changeBp": -1.4
   },
   {
    "group": "asia",
    "sym": "^N225",
    "name": "日經225",
-   "date": "2026-10-23",
-   "time": "2026-10-23T14:45+08:00",
-   "price": 62693.16,
-   "prev": 62907.8398,
-   "change": -214.6798,
-   "changePct": -0.34
+   "date": "2026-10-27",
+   "time": "2026-10-27T08:11+08:00",
+   "price": 63034.94,
+   "prev": 62693.1602,
+   "change": 341.7798,
+   "changePct": 0.55
   },
   {
    "group": "asia",
    "sym": "^KS11",
    "name": "韓國KOSPI",
-   "date": "2026-10-23",
-   "time": "2026-10-23T19:05+08:00",
-   "price": 5550.3,
-   "prev": 5533.77,
-   "change": 16.53,
-   "changePct": 0.3
+   "date": "2026-10-27",
+   "time": "2026-10-27T08:06+08:00",
+   "price": 5677.51,
+   "prev": 5550.2998,
+   "change": 127.2102,
+   "changePct": 2.29
   },
   {
    "group": "usFut",
    "sym": "ESZ26.CME",
    "name": "標普期貨",
-   "date": "2026-10-23",
-   "time": "2026-10-24T05:00+08:00",
-   "price": 7672.5,
-   "prev": 7704.5,
-   "change": -32.0,
-   "changePct": -0.42,
+   "date": "2026-10-26",
+   "time": "2026-10-27T08:16+08:00",
+   "price": 7725.5,
+   "prev": 7659.75,
+   "change": 65.75,
+   "changePct": 0.86,
    "contract": "ESZ26.CME"
   },
   {
    "group": "usFut",
    "sym": "NQZ26.CME",
    "name": "那指期貨",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:59+08:00",
-   "price": 29175.0,
-   "prev": 29142.0,
-   "change": 33.0,
-   "changePct": 0.11,
+   "date": "2026-10-26",
+   "time": "2026-10-27T08:16+08:00",
+   "price": 29553.25,
+   "prev": 29117.75,
+   "change": 435.5,
+   "changePct": 1.5,
    "contract": "NQZ26.CME"
   },
   {
    "group": "oil",
    "sym": "CLZ26.NYM",
    "name": "WTI原油",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:59+08:00",
-   "price": 103.44,
-   "prev": 99.47,
-   "change": 3.97,
-   "changePct": 3.99,
+   "date": "2026-10-26",
+   "time": "2026-10-27T08:16+08:00",
+   "price": 101.18,
+   "prev": 103.27,
+   "change": -2.09,
+   "changePct": -2.02,
    "contract": "CLZ26.NYM"
   },
   {
    "group": "oil",
    "sym": "BZF27.NYM",
    "name": "布蘭特原油",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:59+08:00",
-   "price": 111.66,
-   "prev": 108.66,
-   "change": 3.0,
-   "changePct": 2.76,
+   "date": "2026-10-26",
+   "time": "2026-10-27T08:16+08:00",
+   "price": 110.05,
+   "prev": 111.7,
+   "change": -1.65,
+   "changePct": -1.48,
    "contract": "BZF27.NYM"
   },
   {
    "group": "adr",
    "sym": "TSM",
    "name": "台積電ADR",
-   "date": "2026-10-23",
-   "time": "2026-10-24T04:00+08:00",
-   "price": 418.51,
-   "prev": 412.35,
-   "change": 6.16,
-   "changePct": 1.49,
-   "twdRate": 32.57,
-   "twdEquiv": 2726.2,
+   "date": "2026-10-26",
+   "time": "2026-10-27T04:00+08:00",
+   "price": 424.37,
+   "prev": 418.51,
+   "change": 5.86,
+   "changePct": 1.4,
+   "twdRate": 32.534,
+   "twdEquiv": 2761.3,
    "twClose": 2385.0,
    "twDate": "2026-10-22",
-   "premiumPct": 14.3
-  },
-  {
-   "group": "twFut",
-   "sym": "TWNV26",
-   "name": "富台期",
-   "date": "2026-10-24",
-   "time": "2026-10-24T05:20+08:00",
-   "price": 3994.75,
-   "prev": 4024.75,
-   "change": -30.0,
-   "changePct": -0.75,
-   "contract": "TWNV26.SGX",
-   "session": "夜間盤",
-   "baseDate": "2026-10-22",
-   "tmfBase": 46270.0,
-   "tmfEquiv": 45925
+   "premiumPct": 15.8
   }
  ],
  "estimate": {
@@ -174,23 +158,26 @@
   "baseSession": "夜盤",
   "baseTime": "2026-10-23T05:00+08:00",
   "usDays": [
-   "2026-10-23"
+   "2026-10-23",
+   "2026-10-26"
   ],
   "parts": [
    {
     "name": "費半",
-    "cumPct": 0.44
+    "cumPct": 3.28
    },
    {
     "name": "那指",
-    "cumPct": -0.21
+    "cumPct": 0.62
    }
   ],
-  "lowPts": -63,
-  "highPts": 73,
-  "low": 45608,
-  "high": 45744,
+  "lowPts": 189,
+  "highPts": 538,
+  "low": 45860,
+  "high": 46209,
   "note": "粗估：微台大約是費半漲跌的0.36倍、那指的0.67倍，約四成的波動解釋不到"
  },
- "errors": []
+ "errors": [
+  "富台期：富台期 TWNV26 缺價格或 2026-10-22 結算價"
+ ]
 }
