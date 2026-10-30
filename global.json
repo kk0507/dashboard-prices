@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-30T09:00:22+08:00",
+ "generatedAt": "2026-10-30T09:59:07+08:00",
  "usSession": "2026-10-29",
  "items": [
   {
@@ -71,33 +71,33 @@
    "sym": "^N225",
    "name": "日經225",
    "date": "2026-10-30",
-   "time": "2026-10-30T08:45+08:00",
-   "price": 63524.91,
-   "prev": 63954.1914,
-   "change": -429.2814,
-   "changePct": -0.67
+   "time": "2026-10-30T09:44+08:00",
+   "price": 62944.25,
+   "prev": 64659.4688,
+   "change": -1715.2188,
+   "changePct": -2.65
   },
   {
    "group": "asia",
    "sym": "^KS11",
    "name": "韓國KOSPI",
    "date": "2026-10-30",
-   "time": "2026-10-30T08:40+08:00",
-   "price": 5717.5,
-   "prev": 6012.4399,
-   "change": -294.9399,
-   "changePct": -4.91
+   "time": "2026-10-30T09:39+08:00",
+   "price": 5642.56,
+   "prev": 5937.6602,
+   "change": -295.1002,
+   "changePct": -4.97
   },
   {
    "group": "usFut",
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-10-29",
-   "time": "2026-10-30T08:50+08:00",
-   "price": 7694.0,
+   "time": "2026-10-30T09:49+08:00",
+   "price": 7666.25,
    "prev": 7783.25,
-   "change": -89.25,
-   "changePct": -1.15,
+   "change": -117.0,
+   "changePct": -1.5,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-10-29",
-   "time": "2026-10-30T08:50+08:00",
-   "price": 28987.0,
+   "time": "2026-10-30T09:49+08:00",
+   "price": 28830.5,
    "prev": 29979.5,
-   "change": -992.5,
-   "changePct": -3.31,
+   "change": -1149.0,
+   "changePct": -3.83,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,24 +117,12 @@
    "sym": "CLZ26.NYM",
    "name": "WTI原油",
    "date": "2026-10-29",
-   "time": "2026-10-30T08:50+08:00",
-   "price": 102.69,
+   "time": "2026-10-30T09:49+08:00",
+   "price": 104.9,
    "prev": 102.78,
-   "change": -0.09,
-   "changePct": -0.09,
+   "change": 2.12,
+   "changePct": 2.06,
    "contract": "CLZ26.NYM"
-  },
-  {
-   "group": "oil",
-   "sym": "BZF27.NYM",
-   "name": "布蘭特原油",
-   "date": "2026-10-29",
-   "time": "2026-10-30T08:50+08:00",
-   "price": 111.36,
-   "prev": 111.64,
-   "change": -0.28,
-   "changePct": -0.25,
-   "contract": "BZF27.NYM"
   },
   {
    "group": "adr",
@@ -146,15 +134,31 @@
    "prev": 439.51,
    "change": -7.7,
    "changePct": -1.75,
-   "twdRate": 32.48,
-   "twdEquiv": 2805.0,
+   "twdRate": 32.64,
+   "twdEquiv": 2818.9,
    "twClose": 2415.0,
    "twDate": "2026-10-29",
-   "premiumPct": 16.2
+   "premiumPct": 16.7
+  },
+  {
+   "group": "twFut",
+   "sym": "TWNX26",
+   "name": "富台期",
+   "date": "2026-10-30",
+   "time": "2026-10-30T09:45+08:00",
+   "price": 3901.0,
+   "prev": 4053.25,
+   "change": -152.25,
+   "changePct": -3.76,
+   "contract": "TWNX26.SGX",
+   "session": "日間盤",
+   "baseDate": "2026-10-29",
+   "tmfBase": 46579.0,
+   "tmfEquiv": 44829
   }
  ],
  "estimate": null,
  "errors": [
-  "富台期：富台期 TWNX26 缺價格或 2026-10-29 結算價"
+  "布蘭特原油：找不到對應合約，換約中漲跌不可靠，略過"
  ]
 }
