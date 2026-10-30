@@ -9,7 +9,7 @@ import runpy
 import statistics as st
 import sys
 import time
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 
 import requests
 
@@ -40,6 +40,22 @@ def pct(v, nd=1):
     return "—" if v is None else f"{v:+.{nd}f}%"
 
 
+# 「今天」＝這一輪該算的收盤日。GitHub 排程常晚好幾個小時（10/26～10/29 都拖到台北隔天 03:00 後才跑），
+# 台北 08:00 以前跑的一律算前一天的收盤，不然會以為「今天沒資料」、每日摘要整個跳過（10/22～10/29 的教訓）
+# TREND_NOW（ISO 時間，台北）只給本機測試用
+NOW = (datetime.fromisoformat(os.environ["TREND_NOW"]) if os.environ.get("TREND_NOW")
+       else datetime.now(timezone.utc) + timedelta(hours=8)).replace(tzinfo=None)
+TODAY = (NOW - timedelta(hours=8)).strftime("%Y-%m-%d")
+
+
+def late_note():
+    """排程（21:47）晚超過 2 小時就在摘要註明；手動觸發不算"""
+    if os.environ.get("GITHUB_EVENT_NAME", "schedule") != "schedule":
+        return ""
+    late = (NOW - datetime.fromisoformat(f"{TODAY}T21:47")).total_seconds() / 3600
+    return f"⏱ 這次 GitHub 晚了約 {late:.0f} 小時才跑（排定 21:47，實際 {NOW:%m/%d %H:%M}）" if late >= 2 else ""
+
+
 # ---------- 1) 補資料 ----------
 latest = data.update()
 print("資料最新日期", latest)
@@ -58,16 +74,16 @@ if missing_of(latest):
     time.sleep(120)
     latest = data.update()
     print("資料最新日期（重抓）", latest)
-if missing_of(latest) and latest.get("taiex") == data.TODAY:
+if missing_of(latest) and latest.get("taiex") == TODAY:
     st0 = json.load(open(NOTIFY, encoding="utf-8")) if os.path.exists(NOTIFY) else {}
     hook0 = os.environ.get("DISCORD_TREND_WEBHOOK", "")
     old = json.load(open(OUT, encoding="utf-8")).get("asOf") if os.path.exists(OUT) else None
-    msg = (f"⚠️ 趨勢 {md(data.TODAY)}：{'、'.join(missing_of(latest))} 今天還沒抓到，分數先暫停一天，"
+    msg = (f"⚠️ 趨勢 {md(TODAY)}：{'、'.join(missing_of(latest))} 今天還沒抓到，分數先暫停一天，"
            f"戰情室維持 {md(old) if old else '上一次'} 的讀數，不會寫進算錯的分數。")
     print(msg)
-    if hook0 and old != data.TODAY and st0.get("incomplete") != data.TODAY:  # 已經有今天正確的讀數（例如手動補過）就安靜保留
+    if hook0 and old != TODAY and st0.get("incomplete") != TODAY:  # 已經有今天正確的讀數（例如手動補過）就安靜保留
         requests.post(hook0, json={"content": msg}, timeout=30).raise_for_status()
-        st0["incomplete"] = data.TODAY
+        st0["incomplete"] = TODAY
         json.dump(st0, open(NOTIFY, "w", encoding="utf-8"), ensure_ascii=False)
     sys.exit(0)
 
@@ -123,7 +139,7 @@ print("寫好 trend.json", os.path.getsize(OUT), "bytes；分數", doc["score"],
 # ---------- 5) Discord ----------
 hook = os.environ.get("DISCORD_TREND_WEBHOOK", "")
 state = json.load(open(NOTIFY, encoding="utf-8")) if os.path.exists(NOTIFY) else {}
-today = data.TODAY
+today = TODAY
 msgs = []
 
 
@@ -173,6 +189,8 @@ if doc["asOf"] == today:
         sc = changed(doc["status"])
         nb = sum(r["state"] == -1 for r in doc["status"]); ng = sum(r["state"] == 1 for r in doc["status"])
         lines.append(f"現況 13 項：{nb} 轉壞、{ng} 轉好、{13 - nb - ng} 中性／無資料" + (f"；今天變動：{'、'.join(sc)}" if sc else ""))
+        if late_note():
+            lines.append(late_note())
         lines.append("只有市場數據，不是買賣建議。")
         msgs.append("\n".join(lines))
         state["daily"] = today
