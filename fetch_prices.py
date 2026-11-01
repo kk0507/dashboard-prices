@@ -81,6 +81,15 @@ def roc(d):
     return f"{int(d[:-4]) + 1911:04d}-{d[-4:-2]}-{d[-2:]}"
 
 
+def market_day(now):
+    """這一輪該抓哪一天的收盤。GitHub 排程常晚好幾個小時（10/30 拖到週六 00:42），台北 08:00 以前算前一天、
+    週末退回週五，不然會跳過官網、改用還沒更新的開放資料，把已經抓到的收盤價蓋回舊的（10/31 的教訓）"""
+    d = (now - dt.timedelta(hours=8)).date()
+    while d.weekday() >= 5:
+        d -= dt.timedelta(days=1)
+    return d.strftime("%Y-%m-%d")
+
+
 STOCK_CODE = re.compile(r"^\d{4,5}[A-Z]?$")  # 股票與ETF，排除權證等
 
 
@@ -100,11 +109,16 @@ def main():
     src = {}
     old = load_old()
     failed = []  # 這一輪抓不到的來源：沿用上一版該來源的資料，其餘照寫，不讓整輪失敗
-    weekday = dt.datetime.now(TW).weekday() < 5
-    today_str = dt.datetime.now(TW).strftime("%Y-%m-%d")
+    today_str = market_day(dt.datetime.now(TW))
+
+    def no_regress(key, day):
+        """資料日期比上一版舊就當作這一輪沒抓到，走下面「沿用上一版」"""
+        prev = ((old.get("sources") or {}).get(key) or {}).get("date", "")
+        if day < prev:
+            raise RuntimeError(f"資料日期 {day} 比上一版 {prev} 舊")
 
     def twse_quotes():
-        rows = twse_rwd_rows(today_str) if weekday else []
+        rows = twse_rwd_rows(today_str)
         if len(rows) < 800:
             rows = get_json(TWSE_ALL)
         q = {}
@@ -115,10 +129,12 @@ def main():
         # 資料量太少代表來源壞了，寧可當作沒抓到也不要寫進去
         if len(q) < 800:
             raise RuntimeError(f"證交所資料量異常：{len(q)}")
-        return q, {"date": roc(rows[0]["Date"]), "count": len(q)}
+        day = roc(rows[0]["Date"])
+        no_regress("twse", day)
+        return q, {"date": day, "count": len(q)}
 
     def tpex_quotes():
-        rows = tpex_site_rows(today_str) if weekday else []
+        rows = tpex_site_rows(today_str)
         if len(rows) < 400:
             rows = get_json(TPEX_ALL)
         q = {}
@@ -129,7 +145,9 @@ def main():
                     "c": c, "d": roc(r["Date"]), "chg": num_signed(r.get("Change")), "n": r.get("CompanyName", "").strip()}
         if len(q) < 400:
             raise RuntimeError(f"櫃買資料量異常：{len(q)}")
-        return q, {"date": roc(rows[0]["Date"]), "count": len(q)}
+        day = roc(rows[0]["Date"])
+        no_regress("tpex", day)
+        return q, {"date": day, "count": len(q)}
 
     fresh = {}
     for key, label, fn in (("twse", "證交所", twse_quotes), ("tpex", "櫃買", tpex_quotes)):
@@ -164,7 +182,7 @@ def main():
     if len(failed) == 3:
         raise RuntimeError("證交所、櫃買、大盤全部抓不到")
     d, close, chg = rec[-1]
-    if d < today_str and dt.datetime.now(TW).weekday() < 5:
+    if d < today_str:
         # FMTQIK 還沒更新今天時，用今天 5 秒指數的最後一筆當收盤（13:30 那筆＝收盤指數）
         try:
             j0 = get_json(FIVE_MIN.format(d=today_str.replace("-", "")))
@@ -189,6 +207,11 @@ def main():
             taiex["intraday"] = pts
     except Exception as e:  # noqa: BLE001 走勢圖抓不到不算致命
         alerts.append(f"大盤走勢圖抓取失敗（不影響收盤價）：{e}")
+
+    if (old.get("taiex") or {}).get("date", "") > taiex["date"]:  # 大盤一樣不倒退
+        print(f"WARN 大盤資料日期 {taiex['date']} 比上一版 {old['taiex']['date']} 舊，沿用上一版")
+        taiex = old["taiex"]
+        d, close = taiex["date"], taiex["close"]
 
     now = dt.datetime.now(TW)
     out = {"generatedAt": now.isoformat(timespec="seconds"), "sources": src, "taiex": taiex, "quotes": quotes}
@@ -217,8 +240,8 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"OK twse={src['twse']} tpex={src['tpex']} taiex={d} {close}")
 
-    if final and now.weekday() < 5:
-        today = now.strftime("%Y-%m-%d")
+    if final:
+        today = today_str
         try:
             j = get_json(FIVE_MIN.format(d=today.replace("-", "")))
             is_trading_day = j.get("stat") == "OK" and bool(j.get("data"))
