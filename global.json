@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-03T10:55:42+08:00",
+ "generatedAt": "2026-11-03T11:29:08+08:00",
  "usSession": "2026-11-02",
  "items": [
   {
@@ -82,22 +82,22 @@
    "sym": "^KS11",
    "name": "韓國KOSPI",
    "date": "2026-11-03",
-   "time": "2026-11-03T10:35+08:00",
-   "price": 5695.73,
+   "time": "2026-11-03T11:09+08:00",
+   "price": 5670.26,
    "prev": 5859.0801,
-   "change": -163.3501,
-   "changePct": -2.79
+   "change": -188.8201,
+   "changePct": -3.22
   },
   {
    "group": "usFut",
    "sym": "ESZ26.CME",
    "name": "標普期貨",
    "date": "2026-11-02",
-   "time": "2026-11-03T10:45+08:00",
-   "price": 7576.75,
+   "time": "2026-11-03T11:19+08:00",
+   "price": 7574.5,
    "prev": 7614.0,
-   "change": -37.25,
-   "changePct": -0.49,
+   "change": -39.5,
+   "changePct": -0.52,
    "contract": "ESZ26.CME"
   },
   {
@@ -105,11 +105,11 @@
    "sym": "NQZ26.CME",
    "name": "那指期貨",
    "date": "2026-11-02",
-   "time": "2026-11-03T10:45+08:00",
-   "price": 28242.5,
+   "time": "2026-11-03T11:19+08:00",
+   "price": 28237.75,
    "prev": 28534.0,
-   "change": -291.5,
-   "changePct": -1.02,
+   "change": -296.25,
+   "changePct": -1.04,
    "contract": "NQZ26.CME"
   },
   {
@@ -117,11 +117,11 @@
    "sym": "CLZ26.NYM",
    "name": "WTI原油",
    "date": "2026-11-02",
-   "time": "2026-11-03T10:45+08:00",
-   "price": 96.89,
+   "time": "2026-11-03T11:18+08:00",
+   "price": 96.66,
    "prev": 104.12,
-   "change": -7.23,
-   "changePct": -6.94,
+   "change": -7.46,
+   "changePct": -7.16,
    "contract": "CLZ26.NYM"
   },
   {
@@ -129,11 +129,11 @@
    "sym": "BZF27.NYM",
    "name": "布蘭特原油",
    "date": "2026-11-02",
-   "time": "2026-11-03T10:45+08:00",
-   "price": 105.09,
+   "time": "2026-11-03T11:18+08:00",
+   "price": 104.83,
    "prev": 113.43,
-   "change": -8.34,
-   "changePct": -7.35,
+   "change": -8.6,
+   "changePct": -7.58,
    "contract": "BZF27.NYM"
   },
   {
@@ -146,11 +146,11 @@
    "prev": 406.13,
    "change": -7.5,
    "changePct": -1.85,
-   "twdRate": 32.657,
-   "twdEquiv": 2603.6,
+   "twdRate": 32.735,
+   "twdEquiv": 2609.8,
    "twClose": 2330.0,
    "twDate": "2026-11-02",
-   "premiumPct": 11.7
+   "premiumPct": 12.0
   }
  ],
  "estimate": null,
