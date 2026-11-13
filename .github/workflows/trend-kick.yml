@@ -1,0 +1,30 @@
+name: trend-kick
+# 準時觸發趨勢（2026-11-13 加）：GitHub 的定時排程常晚 4～8 小時、甚至整輪沒跑（11/11）。
+# Claude 雲端排程（台北 21:50，準時）推一個空提交到 claude/trend-kick 分支 → 這支馬上跑 →
+# 用 GitHub 自己的權限叫 prices.yml「只算趨勢」那一輪（在 main 上跑；今天算過就跳過、不重發）。
+# 提交訊息含 [test] 時只印 OK，不叫趨勢（給連線測試用）。不需要任何個人通行碼。
+
+on:
+  push:
+    branches: ["claude/trend-kick"]
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  kick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch trend-only run on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          if printf '%s' "$MSG" | grep -q '\[test\]'; then
+            echo "test kick OK（沒有叫趨勢）"
+            exit 0
+          fi
+          gh workflow run prices.yml --repo "${{ github.repository }}" --ref main -f only_trend=true
+          echo "已叫 prices.yml only_trend"
