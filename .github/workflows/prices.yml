@@ -10,6 +10,11 @@ on:
     - cron: "17 11 * * 1-5"
     # 台北 21:47（UTC 13:47）：融資融券與櫃買籌碼比較晚公布，這一輪補齊並檢查資料完整度
     - cron: "47 13 * * 1-5"
+    # 趨勢備援（2026-11-13 加）：台北 22:47、23:47、00:47 三輪只算趨勢；21:47 那輪已經算過今天就直接跳過、不重發
+    # （11/11 那天 21:47 那輪卡在 GitHub 排隊沒跑，整天沒有趨勢通知）
+    - cron: "47 14 * * 1-5"
+    - cron: "47 15 * * 1-5"
+    - cron: "47 16 * * 1-5"
     # 夜盤收盤（清晨 05:00）後只抓期貨＋盤前全球快照（fetch_global.py）：台北週二~週六 05:17、06:17（UTC 前一天 21:17、22:17），06:17 是夜盤最後一輪
     - cron: "17 21 * * 1-5"
     - cron: "17 22 * * 1-5"
@@ -31,6 +36,10 @@ on:
         description: "算趨勢檢查（trend.json＋Discord）"
         type: boolean
         default: false
+      only_trend:
+        description: "只算趨勢（不抓價格；雲端準時排程 21:50 叫的就是這個）"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -45,6 +54,8 @@ jobs:
     timeout-minutes: 20
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      # 只算趨勢的那幾輪（備援排程、雲端準時排程叫的）：價格、籌碼、公告都跳過
+      TREND_ONLY: ${{ github.event.schedule == '47 14 * * 1-5' || github.event.schedule == '47 15 * * 1-5' || github.event.schedule == '47 16 * * 1-5' || inputs.only_trend == true }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,8 +63,22 @@ jobs:
           python-version: "3.12"
       - run: pip install requests
 
+      - name: Trend already done today? (trend-only runs skip if so)
+        id: trenddone
+        if: env.TREND_ONLY == 'true'
+        # 「今天」跟 trend/run.py 同一套：台北時間減 8 小時（台北 08:00 以前算前一天的收盤）＝UTC 的日期
+        run: |
+          python - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json, os
+          from datetime import datetime, timezone
+          today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+          asof = json.load(open("trend.json", encoding="utf-8")).get("asOf") if os.path.exists("trend.json") else None
+          print(f"done={'true' if asof == today else 'false'}")
+          EOF
+          cat "$GITHUB_OUTPUT"
+
       - name: Fetch prices
-        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
+        if: env.TREND_ONLY != 'true' && github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           if [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] || [ "${{ inputs.final }}" = "true" ]; then
             python fetch_prices.py --final
@@ -62,16 +87,17 @@ jobs:
           fi
 
       - name: Fetch dividend notices (failure does not affect prices)
-        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
+        if: env.TREND_ONLY != 'true' && github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           python fetch_dividends.py || { [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] && echo "⚠️ 除權息預告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
 
       - name: Fetch market institutional totals (TWSE BFI82U; failure does not affect prices)
-        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
+        if: env.TREND_ONLY != 'true' && github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           python fetch_market_inst.py || { [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && echo "⚠️ 大盤三大法人金額今天抓取失敗（不影響收盤價；消息排程會改註明媒體數字）" >> alert.txt; true; }
 
       - name: Fetch futures (TX/TMF + institutional chips; failure does not affect prices)
+        if: env.TREND_ONLY != 'true'
         run: |
           if [ "${{ github.event.schedule }}" = "17 11 * * 1-5" ] || [ "${{ inputs.final }}" = "true" ]; then
             python fetch_futures.py --final || echo "⚠️ 期貨行情/法人籌碼今天抓取失敗（不影響股票收盤價）" >> alert.txt
@@ -92,7 +118,7 @@ jobs:
 
       - name: Update market data store and signals (failure does not affect prices)
         # 夜盤那兩輪（清晨 05:17、06:17）只抓期貨與全球快照，不重算股票資料：那時證交所資料常抓不到，會把股票池弄壞
-        if: github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
+        if: env.TREND_ONLY != 'true' && github.event.schedule != '17 21 * * 1-5' && github.event.schedule != '17 22 * * 1-5' && inputs.night != true
         run: |
           FINALRUN=0; [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && FINALRUN=1
           if python update_store.py && python build_signals.py; then
@@ -103,6 +129,7 @@ jobs:
           fi
 
       - name: Fetch official announcements (failure does not affect prices)
+        if: env.TREND_ONLY != 'true'
         run: |
           python fetch_announcements.py || { [ "${{ github.event.schedule }}" = "47 13 * * 1-5" ] && echo "⚠️ 官方公告今天抓取失敗（不影響收盤價）" >> alert.txt; true; }
 
@@ -112,9 +139,10 @@ jobs:
           W=""; { [ "$(date -u +%u)" = "5" ] || [ "${{ inputs.screen }}" = "true" ]; } && W="--weekly"
           python build_screen.py $W || echo "⚠️ 選股名單今天更新失敗（不影響收盤價）" >> alert.txt
 
-      - name: Build trend check (21:47 run only; failure does not affect prices)
+      - name: Build trend check (21:47 run + trend-only backups; failure does not affect prices)
         # 趨勢確認系統：補 data/trend/*.csv → trend.json；摘要與分數變動發到趨勢專用的 Discord 機器人
-        if: github.event.schedule == '47 13 * * 1-5' || inputs.trend == true
+        # 只算趨勢的那幾輪：今天已經算過就跳過（同一天也不會重發，run.py 有 notify.json 擋）
+        if: github.event.schedule == '47 13 * * 1-5' || inputs.trend == true || (env.TREND_ONLY == 'true' && steps.trenddone.outputs.done != 'true')
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
           DISCORD_TREND_WEBHOOK: ${{ secrets.DISCORD_TREND_WEBHOOK }}
