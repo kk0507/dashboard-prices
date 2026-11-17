@@ -181,6 +181,18 @@ def update():
 _Y = {}
 
 
+def _day_fn(meta):
+    """時間戳記 → 交易所當地日期。逐筆用交易所時區換算（含夏令時間）。
+    不能用 meta["gmtoffset"]：那是「現在」的偏移，套到夏令月份的 CL=F（美東午夜）、TWD=X（倫敦午夜）會早一天（2026-11-17 修）。"""
+    try:
+        from zoneinfo import ZoneInfo
+        tz = ZoneInfo(meta["exchangeTimezoneName"])
+        return lambda t: datetime.fromtimestamp(t, tz).strftime("%Y-%m-%d")
+    except Exception:
+        off = meta["gmtoffset"]
+        return lambda t: datetime.fromtimestamp(t + off, timezone.utc).strftime("%Y-%m-%d")
+
+
 def yahoo(sym):
     """回傳 {date: {"c","h","l"}}，date 是該市場當地日期"""
     if sym not in _Y:
@@ -194,12 +206,12 @@ def yahoo(sym):
                 time.sleep(5 * (i + 1))
         if d is None:
             raise SystemExit(f"Yahoo {sym} 抓不到")
-        off = d["meta"]["gmtoffset"]
+        day = _day_fn(d["meta"])
         q = d["indicators"]["quote"][0]
         out = {}
         for t, c, h, l in zip(d["timestamp"], q["close"], q["high"], q["low"]):
             if c:
-                out[datetime.fromtimestamp(t + off, timezone.utc).strftime("%Y-%m-%d")] = {"c": c, "h": h or c, "l": l or c}
+                out[day(t)] = {"c": c, "h": h or c, "l": l or c}
         _Y[sym] = out
     return _Y[sym]
 
