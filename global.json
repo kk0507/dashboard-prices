@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T10:16:18+08:00",
+ "generatedAt": "2026-11-21T11:14:01+08:00",
  "usSession": "2026-11-20",
  "items": [
   {
@@ -169,28 +169,6 @@
    "tmfEquiv": 34161
   }
  ],
- "estimate": {
-  "base": 35883.0,
-  "baseSession": "日盤",
-  "baseTime": "2026-11-20T13:45+08:00",
-  "usDays": [
-   "2026-11-20"
-  ],
-  "parts": [
-   {
-    "name": "費半",
-    "cumPct": -10.73
-   },
-   {
-    "name": "那指",
-    "cumPct": -5.28
-   }
-  ],
-  "lowPts": -1387,
-  "highPts": -1270,
-  "low": 34496,
-  "high": 34613,
-  "note": "粗估：微台大約是費半漲跌的0.36倍、那指的0.67倍，約四成的波動解釋不到"
- },
+ "estimate": null,
  "errors": []
 }
