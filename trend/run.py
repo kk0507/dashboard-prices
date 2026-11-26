@@ -41,11 +41,12 @@ def pct(v, nd=1):
 
 
 # 「今天」＝這一輪該算的收盤日。GitHub 排程常晚好幾個小時（10/26～10/29 都拖到台北隔天 03:00 後才跑），
-# 台北 08:00 以前跑的一律算前一天的收盤，不然會以為「今天沒資料」、每日摘要整個跳過（10/22～10/29 的教訓）
+# 台北 14:30 以前跑的一律算前一天的收盤（收盤前不可能有今天的資料），不然會以為「今天沒資料」、每日摘要整個跳過
+# （10/22～10/29 的教訓定成 08:00；11/25 00:47 備援延遲到 09:05 才跑，又誤報「今天沒資料」→ 2026-11-25 改成 14:30）
 # TREND_NOW（ISO 時間，台北）只給本機測試用
 NOW = (datetime.fromisoformat(os.environ["TREND_NOW"]) if os.environ.get("TREND_NOW")
        else datetime.now(timezone.utc) + timedelta(hours=8)).replace(tzinfo=None)
-TODAY = (NOW - timedelta(hours=8)).strftime("%Y-%m-%d")
+TODAY = (NOW - timedelta(hours=14, minutes=30)).strftime("%Y-%m-%d")
 
 
 def late_note():
