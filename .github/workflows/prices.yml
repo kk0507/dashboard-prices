@@ -66,12 +66,12 @@ jobs:
       - name: Trend already done today? (trend-only runs skip if so)
         id: trenddone
         if: env.TREND_ONLY == 'true'
-        # 「今天」跟 trend/run.py 同一套：台北時間減 8 小時（台北 08:00 以前算前一天的收盤）＝UTC 的日期
+        # 「今天」跟 trend/run.py 同一套：台北時間減 14:30（台北 14:30 以前算前一天的收盤）＝UTC 減 6:30 的日期（2026-11-26 跟 run.py 一起改）
         run: |
           python - <<'EOF' >> "$GITHUB_OUTPUT"
           import json, os
-          from datetime import datetime, timezone
-          today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+          from datetime import datetime, timedelta, timezone
+          today = (datetime.now(timezone.utc) - timedelta(hours=6, minutes=30)).strftime("%Y-%m-%d")
           asof = json.load(open("trend.json", encoding="utf-8")).get("asOf") if os.path.exists("trend.json") else None
           print(f"done={'true' if asof == today else 'false'}")
           EOF
