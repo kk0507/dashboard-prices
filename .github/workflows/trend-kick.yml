@@ -3,6 +3,9 @@ name: trend-kick
 # Claude 雲端排程（台北 21:50，準時）推一個空提交到 claude/trend-kick 分支 → 這支馬上跑 →
 # 用 GitHub 自己的權限叫 prices.yml「只算趨勢」那一輪（在 main 上跑；今天算過就跳過、不重發）。
 # 提交訊息含 [test] 時只印 OK，不叫趨勢（給連線測試用）。不需要任何個人通行碼。
+# 2026-11-26 加：收盤價、夜盤也用同一招（GitHub 排程常拖，11/24 收盤價隔天 07:16 才出來）。
+# Claude 雲端排程台北平日 15:20、16:20 推 [prices] → 一般收盤價輪；週二～六 05:20 推 [night] → 夜盤輪。
+# GitHub 自己的排程照舊保留當備援；重跑沒有變動就不提交，Discord 成功通知一天只發一次。
 
 on:
   push:
@@ -26,5 +29,13 @@ jobs:
             echo "test kick OK（沒有叫趨勢）"
             exit 0
           fi
-          gh workflow run prices.yml --repo "${{ github.repository }}" --ref main -f only_trend=true
-          echo "已叫 prices.yml only_trend"
+          if printf '%s' "$MSG" | grep -q '\[night\]'; then
+            gh workflow run prices.yml --repo "${{ github.repository }}" --ref main -f night=true
+            echo "已叫 prices.yml night（夜盤輪）"
+          elif printf '%s' "$MSG" | grep -q '\[prices\]'; then
+            gh workflow run prices.yml --repo "${{ github.repository }}" --ref main
+            echo "已叫 prices.yml（一般收盤價輪）"
+          else
+            gh workflow run prices.yml --repo "${{ github.repository }}" --ref main -f only_trend=true
+            echo "已叫 prices.yml only_trend"
+          fi
