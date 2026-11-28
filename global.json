@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-28T05:21:10+08:00",
+ "generatedAt": "2026-11-28T11:18:55+08:00",
  "usSession": "2026-11-27",
  "items": [
   {
@@ -146,8 +146,8 @@
    "prev": 342.34,
    "change": 11.0,
    "changePct": 3.21,
-   "twdRate": 32.971,
-   "twdEquiv": 2330.0,
+   "twdRate": 32.979,
+   "twdEquiv": 2330.6,
    "twClose": 2180.0,
    "twDate": "2026-11-27",
    "premiumPct": 6.9
@@ -157,16 +157,16 @@
    "sym": "TWNZ26",
    "name": "富台期",
    "date": "2026-11-28",
-   "time": "2026-11-28T05:03+08:00",
-   "price": 3325.0,
+   "time": "2026-11-28T05:20+08:00",
+   "price": 3323.75,
    "prev": 3349.5,
-   "change": -24.5,
-   "changePct": -0.73,
+   "change": -25.75,
+   "changePct": -0.77,
    "contract": "TWNZ26.SGX",
    "session": "夜間盤",
    "baseDate": "2026-11-27",
    "tmfBase": 39356.0,
-   "tmfEquiv": 39068
+   "tmfEquiv": 39053
   }
  ],
  "estimate": null,
